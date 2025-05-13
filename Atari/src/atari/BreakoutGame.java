@@ -4,13 +4,15 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.JFrame;
+
 
 /**
  * CAMBIOS:
+ * - Comentarios en el codigo
  * - Poner vidas dentro de la partida (3) y puntuacion
  * - Cuando se rompen todos los bloques (dificil) añadir cada 2 min una fila y si se queda sin espacio salta el mini menu
  * - Sonido cuando explota + menu
- * - Cuando golpea en las esquinas, hacer que haya mas angulo al golpear y que no sea lineal
  * - Hacer la interfaz
  * - Establecer 3 modos (facil, medio, dificil) =
  * 		Facil: 3 vidas, romper al toque
@@ -23,24 +25,56 @@ import java.awt.event.WindowEvent;
  */
 
 public class BreakoutGame {
-    public static void main(String[] args) {
-        Frame window = new Frame("Atari Breakout Java2D");
-        window.setSize(800, 600);
-        window.setResizable(false);
+	 private static Frame gameWindow;
+	    private static GameCanvas canvas;
 
-        GameCanvas canvas = new GameCanvas(800, 600);
-        window.add(canvas);
-        window.pack();
-        window.setVisible(true);
+	    // Se llama desde MainMenu
+	    public static void launchGame() {
+	        gameWindow = new Frame("Atari Breakout Java2D");
+	        // Pantalla completa para juego
+	        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+	        int sw = screenSize.width;
+	        int sh = screenSize.height;
+	        gameWindow.setSize(sw, sh);
+	        gameWindow.setResizable(false);
 
-        // cerrar con la X de la ventana
-        window.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
-            }
-        });
+	        // Crear canvas con dimensiones de pantalla completa
+	        canvas = new GameCanvas(sw, sh);
+	        gameWindow.add(canvas);
+	        // No usar pack(), porque queremos tamaño exacto
+	        gameWindow.setVisible(true);
+	        canvas.requestFocus();
 
-        // iniciar loop de juego
-        new Thread(canvas).start();
-    }
-}
+	        gameWindow.addWindowListener(new java.awt.event.WindowAdapter() {
+	            public void windowClosing(java.awt.event.WindowEvent e) {
+	                gameWindow.dispose();
+	                MainMenu.main(null);
+	            }
+	        });
+
+	        new Thread(canvas).start();
+	    }
+	    
+
+	    // Reinicia la partida desde GameCanvas
+	    public static void restartGame() {
+	        if (canvas != null) {
+	            canvas.resetGame();
+	            canvas.requestFocus();
+	            new Thread(canvas).start();
+	        }
+	    }
+
+	    // Vuelve al menú principal desde GameCanvas
+	    public static void returnToMenu() {
+	        if (gameWindow != null) {
+	            gameWindow.dispose();
+	        }
+	        MainMenu.main(null);
+	    }
+
+	    // Entrada por defecto
+	    public static void main(String[] args) {
+	        MainMenu.main(args);
+	    }
+	}
