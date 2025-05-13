@@ -7,7 +7,10 @@ import java.awt.event.WindowEvent;
 
 /**
  * CAMBIOS:
- * - Poner vidas dentro de la partida (3)
+ * - Poner vidas dentro de la partida (3) y puntuacion
+ * - Cuando se rompen todos los bloques (dificil) añadir cada 2 min una fila y si se queda sin espacio salta el mini menu
+ * - Sonido cuando explota + menu
+ * - Cuando golpea en las esquinas, hacer que haya mas angulo al golpear y que no sea lineal
  * - Hacer la interfaz
  * - Establecer 3 modos (facil, medio, dificil) =
  * 		Facil: 3 vidas, romper al toque
