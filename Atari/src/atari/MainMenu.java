@@ -15,6 +15,10 @@ import java.awt.event.WindowEvent;
 
 public class MainMenu extends Frame {
 	 private Image bgImage;
+	 int bx = 100; // coordenada x
+	 int bw = 200; // ancho del botón
+	 int bh = 60;  // alto del botón
+	 int sh = 600;
 
 	    public MainMenu() {
 	        super("Menú Principal");
@@ -33,25 +37,34 @@ public class MainMenu extends Frame {
 	        int bh = sh / 10;
 	        int bx = (sw - bw) / 2;
 
-	        Button btnPlay = new Button("Jugar");
-	        btnPlay.setBounds(bx, sh / 2 - bh * 2, bw, bh);
+	        BotonPersonalizado btnPlay = new BotonPersonalizado("resources/jugar.png", bw, bh);
+	        btnPlay.setLocation(bx, sh / 2 - bh * 2);
 	        add(btnPlay);
 
-	        Button btnLevel = new Button("Niveles");
-	        btnLevel.setBounds(bx, sh / 2 - bh / 2, bw, bh);
+	        // Botón "Niveles"
+	        BotonPersonalizado btnLevel = new BotonPersonalizado("resources/niveles.png", bw, bh);
+	        btnLevel.setLocation(bx, sh / 2 - bh / 2);
 	        add(btnLevel);
 
-	        Button btnExit = new Button("Salir del juego");
-	        btnExit.setBounds(bx, sh / 2 + bh, bw, bh);
+	        // Botón "Salir del juego"
+	        BotonPersonalizado btnExit = new BotonPersonalizado("resources/salir.png", bw, bh);
+	        btnExit.setLocation(bx, sh / 2 + bh);
 	        add(btnExit);
 
 	        // Eventos
-	        btnPlay.addActionListener(e -> {
+	        btnPlay.setAccion(()-> {
 	            dispose();
 	            BreakoutGame.launchGame();
 	        });
-	        btnLevel.addActionListener(e -> GameCanvas.showLevelSelectionMenu());
-	        btnExit.addActionListener(e -> System.exit(0));
+	        
+	        btnLevel.setAccion(()-> { 
+	        	GameCanvas.showLevelSelectionMenu();
+	        	});
+	        
+	        btnExit.setAccion(() -> {
+                System.exit(0);
+                //BreakoutGame.startLevel(levelIndex);
+            });
 
 	        // Listener de cierre
 	        addWindowListener(new WindowAdapter() {
@@ -64,7 +77,7 @@ public class MainMenu extends Frame {
 	        setVisible(true);
 	    }
 
-	    // 🔁 Pintar la imagen de fondo directamente en el Frame
+	    // Pintar la imagen de fondo directamente en el Frame
 	    public void paint(Graphics g) {
 	        if (bgImage != null) {
 	            g.drawImage(bgImage, 0, 0, getWidth(), getHeight(), this);

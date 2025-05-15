@@ -19,6 +19,12 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 
 public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	private int width, height;
@@ -289,7 +295,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	// Nuevo método para mostrar pantalla de selección de nivel
 	 public static void showLevelSelectionMenu() {
 	        Frame levelFrame = new Frame("Seleccionar Nivel") {
-	            private Image bg = Toolkit.getDefaultToolkit().getImage("level_selection_bg.png");
+	            private Image bg = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
 	            {
 	                Toolkit.getDefaultToolkit().prepareImage(bg, -1, -1, null);
 	            }
@@ -307,32 +313,85 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	        levelFrame.setLayout(null);
 	        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	        levelFrame.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
+	        
+	        
 
-	        String[] levelImages = {"resources/star1.png", "resources/star2.png", "resources/star3.png"};
-	        String[] levelNames = {"Fácil", "Intermedio", "Difícil"};
-	        String[] buttonImages = {"resources/facil.png", "resources/medio.png", "resources/dificil.png"};
+	     // Imágenes de niveles
+	        //Image imgFacil = Toolkit.getDefaultToolkit().getImage("resources/star1.png");
+	        Image imgMedio = Toolkit.getDefaultToolkit().getImage("resources/star2.png");
+	        Image imgDificil = Toolkit.getDefaultToolkit().getImage("resources/star3.png");
 
-	        for (int i = 0; i < 3; i++) {
-	            int x = 120 + i * 270;
+	        // ------- Vista previa nivel Fácil -------
+	        JPanel previewFacil = new JPanel() {
+	            BufferedImage img;
 
-	            Image levelImg = Toolkit.getDefaultToolkit().getImage(levelImages[i]);
-	            Canvas preview = new Canvas() {
-	                public void paint(Graphics g) {
-	                    g.drawImage(levelImg, 0, 0, 240, 180, this);
+	            {
+	                try {
+	                    img = ImageIO.read(new File("resources/star1.png")); // Usa la ruta de tu imagen
+	                } catch (IOException e) {
+	                    e.printStackTrace();
 	                }
-	            };
-	            preview.setBounds(x, 150, 240, 160);
-	            levelFrame.add(preview);
+	                setOpaque(false); // Para que el fondo del panel también sea transparente
+	            }
 
-	            BotonPersonalizado btn = new BotonPersonalizado(buttonImages[i], 170, 60);
-	            btn.setBounds(x, 330, 240, 60);
-	            int levelIndex = i;
-	            btn.setAccion(() -> {
-	                levelFrame.dispose();
-	                //BreakoutGame.startLevel(levelIndex);
-	            });
-	            levelFrame.add(btn);
-	        }
+	            @Override
+	            protected void paintComponent(Graphics g) {
+	                super.paintComponent(g);
+	                if (img != null) {
+	                    g.drawImage(img, 0, 0, 240, 180, this);
+	                }
+	            }
+	        };
+	        previewFacil.setBounds(120, 150, 240, 160);
+	        levelFrame.add(previewFacil);
+
+	        // Botón Fácil
+	        BotonPersonalizado boton_facil = new BotonPersonalizado("resources/facil.png", 170, 60);
+	        boton_facil.setBounds(120, 330, 240, 60);
+	        boton_facil.setAccion(() -> {
+	            levelFrame.dispose();
+	            BreakoutGame.launchGame();
+	        });
+	        levelFrame.add(boton_facil);
+
+	        // ------- Vista previa nivel Intermedio -------
+	        Canvas previewMedio = new Canvas() {
+	            public void paint(Graphics g) {
+	                g.drawImage(imgMedio, 0, 0, 240, 180, this);
+	            }
+	        };
+	        previewMedio.setBounds(390, 150, 240, 160);
+	        levelFrame.add(previewMedio);
+
+	        // Botón Intermedio
+	        BotonPersonalizado boton_medio = new BotonPersonalizado("resources/medio.png", 170, 60);
+	        boton_medio.setBounds(390, 330, 240, 60);
+	        boton_medio.setAccion(() -> {
+	            levelFrame.dispose();
+	            // Aquí inicias el nivel intermedio
+	            // BreakoutGame.startLevel(1);
+	        });
+	        levelFrame.add(boton_medio);
+
+	        // ------- Vista previa nivel Difícil -------
+	        Canvas previewDificil = new Canvas() {
+	            public void paint(Graphics g) {
+	                g.drawImage(imgDificil, 0, 0, 240, 180, this);
+	            }
+	        };
+	        previewDificil.setBounds(660, 150, 240, 160);
+	        levelFrame.add(previewDificil);
+
+	        // Botón Difícil
+	        BotonPersonalizado boton_dificil = new BotonPersonalizado("resources/dificil.png", 170, 60);
+	        boton_dificil.setBounds(660, 330, 240, 60);
+	        boton_dificil.setAccion(() -> {
+	            levelFrame.dispose();
+	            // Aquí inicias el nivel difícil
+	            // BreakoutGame.startLevel(2);
+	        });
+	        levelFrame.add(boton_dificil);
+
 
 	        levelFrame.addWindowListener(new WindowAdapter() {
 	            public void windowClosing(WindowEvent e) {
