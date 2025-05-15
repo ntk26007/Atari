@@ -40,4 +40,14 @@ public class BrickManager {
 		}
 		return false;
 	}
+	
+	public boolean isEmpty() {
+	    for (Brick[] row : grid) {
+	        for (Brick b : row) {
+	            if (!b.isBroken()) return false;
+	        }
+	    }
+	    return true;
+	}
+
 }

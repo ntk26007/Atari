@@ -50,7 +50,7 @@ public class MainMenu extends Frame {
 	            dispose();
 	            BreakoutGame.launchGame();
 	        });
-	        btnLevel.addActionListener(e -> System.out.println("Selector de niveles no implementado"));
+	        btnLevel.addActionListener(e -> GameCanvas.showLevelSelectionMenu());
 	        btnExit.addActionListener(e -> System.exit(0));
 
 	        // Listener de cierre

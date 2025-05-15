@@ -32,5 +32,11 @@ public class Brick {
 	    }
 	    public boolean isDestroyed() { return destroyed; }
 	    public void setDestroyed(boolean val) { destroyed = val; }
+	    
+	    public boolean isBroken() {
+	        return destroyed;
+	    }
 	}
+
+
 
