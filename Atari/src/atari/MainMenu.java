@@ -18,7 +18,7 @@ public class MainMenu extends Frame {
 	 int bx = 100; // coordenada x
 	 int bw = 200; // ancho del botón
 	 int bh = 60;  // alto del botón
-	 int sh = 600;
+	 int sh = 600; 
 
 	    public MainMenu() {
 	        super("Menú Principal");
@@ -30,7 +30,7 @@ public class MainMenu extends Frame {
 	        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	        int sw = screenSize.width, sh = screenSize.height;
 	        setSize(sw, sh);
-	        setLayout(null); // Posicionamiento manual
+	        setLayout(null);
 
 	        // Botones
 	        int bw = sw / 4;
@@ -63,10 +63,9 @@ public class MainMenu extends Frame {
 	        
 	        btnExit.setAccion(() -> {
                 System.exit(0);
-                //BreakoutGame.startLevel(levelIndex);
             });
 
-	        // Listener de cierre
+	        // Cerrar pantalla
 	        addWindowListener(new WindowAdapter() {
 	            public void windowClosing(WindowEvent e) {
 	                System.exit(0);
@@ -77,7 +76,7 @@ public class MainMenu extends Frame {
 	        setVisible(true);
 	    }
 
-	    // Pintar la imagen de fondo directamente en el Frame
+	    // Pintar la imagen de fondo directamente 
 	    public void paint(Graphics g) {
 	        if (bgImage != null) {
 	            g.drawImage(bgImage, 0, 0, getWidth(), getHeight(), this);

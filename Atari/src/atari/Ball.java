@@ -79,6 +79,11 @@ public class Ball {
 	    }
 	}
 
+	public void resetPosition(int newX, int newY) {
+	    this.x = newX;
+	    this.y = newY;
+	}
+
 
 	public Rectangle getBounds() {
 		return new Rectangle((int) x, (int) y, diameter, diameter);
@@ -100,4 +105,9 @@ public class Ball {
 	public void reverseX() {
 		dx *= -1;
 	}
+	
+	public int getDiameter() {
+	    return diameter;
+	}
+
 }

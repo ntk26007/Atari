@@ -25,6 +25,7 @@ public class BotonPersonalizado extends Canvas{
 	                if (accion != null) accion.run();
 	            }
 
+	            //cuando entra
 	            @Override
 	            public void mouseEntered(MouseEvent e) {
 	                hover = true;
@@ -50,7 +51,7 @@ public class BotonPersonalizado extends Canvas{
 	        }
 
 	        if (hover) {
-	            g.setColor(new Color(255, 255, 255, 60)); // efecto visual sutil
+	            g.setColor(new Color(255, 255, 255, 60)); // efecto visual 
 	            g.fillRect(0, 0, getWidth(), getHeight());
 	        }
 	    }

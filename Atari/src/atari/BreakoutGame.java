@@ -1,6 +1,10 @@
 package atari;
 
+import java.awt.BorderLayout;
+import java.awt.Canvas;
+import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -9,6 +13,7 @@ import java.awt.event.WindowEvent;
 /**
  * CAMBIOS:
  * - Comentarios en el codigo
+ * - Clase para cada nivel salvo el 1
  * - Cuando se rompen todos los bloques (dificil) añadir cada 2 min una fila y si se queda sin espacio salta el mini menu
  * - Sonido cuando explota + menu
  * - Acabar la interfaz
@@ -23,6 +28,7 @@ import java.awt.event.WindowEvent;
 public class BreakoutGame {
 	 private static Frame gameWindow;
 	    private static GameCanvas canvas;
+	    private static Canvas currentCanvas;
 
 	    // Se llama desde MainMenu
 	    public static void launchGame() {
@@ -51,8 +57,33 @@ public class BreakoutGame {
 	        new Thread(canvas).start();
 	    }
 	    
+	    
+	    public static void launchMediumLevel() {
+	        if (gameWindow != null) gameWindow.dispose(); // Si hay una ventana anterior, se cierra
 
-	    // Reinicia la partida desde GameCanvas
+	        gameWindow = new Frame("Atari Breakout – Nivel Medio");
+	        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+	        gameWindow.setSize(screen.width, screen.height);
+	        gameWindow.setLayout(new BorderLayout());
+
+	        NivelMedio mediumCanvas = new NivelMedio(screen.width, screen.height);
+	        currentCanvas = mediumCanvas;
+	        gameWindow.add(mediumCanvas, BorderLayout.CENTER);
+
+	        gameWindow.addWindowListener(new WindowAdapter() {
+	            @Override
+	            public void windowClosing(WindowEvent e) {
+	                gameWindow.dispose();
+	                MainMenu.main(null);
+	            }
+	        });
+
+	        gameWindow.setVisible(true);
+	        mediumCanvas.requestFocus();
+	        new Thread(mediumCanvas).start();
+	    }
+
+	    // Reinicia la partida desde GameCanvas, el nivel facil
 	    public static void restartGame() {
 	        if (canvas != null) {
 	            canvas.resetGame();
@@ -60,6 +91,10 @@ public class BreakoutGame {
 	            new Thread(canvas).start();
 	        }
 	    }
+	    
+	    
+	    //reinicia el nivel medio
+	    
 
 	    // Vuelve al menú principal desde GameCanvas
 	    public static void returnToMenu() {

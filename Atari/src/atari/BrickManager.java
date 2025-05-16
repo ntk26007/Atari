@@ -17,6 +17,7 @@ public class BrickManager {
 			}
 	}
 
+	//dibuja todos los ladrillos
 	public void draw(Graphics2D g) {
 		for (Brick[] row : grid)
 			for (Brick b : row)
@@ -40,14 +41,16 @@ public class BrickManager {
 		}
 		return false;
 	}
-	
+
+	//comprueba cada fila y columna si estan rotos
 	public boolean isEmpty() {
-	    for (Brick[] row : grid) {
-	        for (Brick b : row) {
-	            if (!b.isBroken()) return false;
-	        }
-	    }
-	    return true;
+		for (Brick[] row : grid) {
+			for (Brick b : row) {
+				if (!b.isBroken())
+					return false;
+			}
+		}
+		return true;
 	}
 
 }

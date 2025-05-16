@@ -57,16 +57,16 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		paddle = new Paddle((width - 100) / 2, height - 50, 100, 10, width);
 		ball = new Ball(width / 2, height / 2, 10, 4, 4, width, height);
 
-		// Configuración dinámica de ladrillos para pantalla completa
+		// bloques
 		int cols = 12; // número de columnas
 		int rows = 6; // número de filas
 		int spacing = 5; // espacio base entre ladrillos
-		int sideMargin = width / 20; // margen lateral adicional (5% pantalla)
+		int sideMargin = width / 20; // margen lateral 
 		int totalSpacingX = (cols + 1) * spacing + sideMargin * 2;
 		int brickWidth = (width - totalSpacingX) / cols;
-		int brickHeight = height / 25; // proporción de altura pantalla
+		int brickHeight = height / 25; // altura pantalla
 		int offsetX = sideMargin + spacing; // margen izquierdo
-		int offsetY = spacing * 9; // margen superior mayor para vidas/puntuación
+		int offsetY = spacing * 9; // margen superior para vidas/puntuación
 		bricks = new BrickManager(rows, cols, brickWidth, brickHeight, offsetX, offsetY);
 
 		// Vidas y puntuación
@@ -98,6 +98,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		}
 	}
 
+	//movimiento pala
 	private void update() {
 		boolean wasWaiting = ball.isWaiting();
 		if (!ball.isWaiting()) {
@@ -127,6 +128,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		}
 	}
 
+	//evitar el parpadeo
 	private void render() {
 		BufferStrategy bs = getBufferStrategy();
 		if (bs == null) {
@@ -135,11 +137,11 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		}
 		Graphics2D g2 = (Graphics2D) bs.getDrawGraphics();
 
-		// Fondo
+		// Fondo del juego base
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, width, height);
 
-		// Vidas y puntuación con fuente un poco mayor
+		// Vidas y puntuación
 		g2.setColor(Color.WHITE);
 		Font original = g2.getFont();
 		g2.setFont(original.deriveFont(original.getSize2D() + 4f));
@@ -156,6 +158,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		bs.show();
 	}
 
+	//muestra ventana cuando se acaban las vidas
 	private void showGameOverMenu() {
 	    Frame menu = new Frame("Game Over") {
 	        private Image background = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
@@ -186,13 +189,15 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	    mainMenu.setBounds(220, 120, 120, 40);
 	    menu.add(mainMenu);
 
+	    //lleva al mismo nivel (cuando se implemente el nivel medio mirar pa q vuelva a ese nivel y no al 1)
 	    retry.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
 	            menu.dispose();
 	            BreakoutGame.restartGame();
 	        }
 	    });
-
+	    
+	    //lleva a menu
 	    mainMenu.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
 	            menu.dispose();
@@ -209,7 +214,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	    menu.setVisible(true);
 	}
 
-
+	//pulsar flechas para jugar
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_LEFT)
@@ -230,7 +235,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	public void keyTyped(KeyEvent e) {
 	}
 	
-	
+	//cuando se rompen todos los blques
 	 private void winMenu() {
 	        Frame winMenu = new Frame("¡Nivel Completado!") {
 	            private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
@@ -274,7 +279,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 
 	        nextBtn.addActionListener(e -> {
 	            winMenu.dispose();
-	            BreakoutGame.restartGame(); // Sustituir por lógica de siguiente nivel
+	            BreakoutGame.restartGame(); // Sustituir lógica de siguiente nivel
 	        });
 
 	        menuBtn.addActionListener(e -> {
@@ -292,7 +297,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	        winMenu.setVisible(true);
 	    }
 	 
-	// Nuevo método para mostrar pantalla de selección de nivel
+	// Nuevo método para mostrar pantalla de selección de nivel en el menu
 	 public static void showLevelSelectionMenu() {
 	        Frame levelFrame = new Frame("Seleccionar Nivel") {
 	            private Image bg = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
@@ -311,7 +316,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	        int w = 1000, h = 700;
 	        levelFrame.setSize(w, h);
 	        levelFrame.setLayout(null);
-	        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+	        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize(); //tamaño
 	        levelFrame.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
 	        
 	        
@@ -350,11 +355,11 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	        boton_facil.setBounds(120, 330, 240, 60);
 	        boton_facil.setAccion(() -> {
 	            levelFrame.dispose();
-	            BreakoutGame.launchGame();
+	            BreakoutGame.launchGame(); //se ejecuta el nivel + facil (por defecto)
 	        });
 	        levelFrame.add(boton_facil);
 
-	        // ------- Vista previa nivel Intermedio -------
+	        // ------- Vista previa nivel Intermedio, cambiar a como lo facil pero se ve mal -------
 	        Canvas previewMedio = new Canvas() {
 	            public void paint(Graphics g) {
 	                g.drawImage(imgMedio, 0, 0, 240, 180, this);
@@ -368,10 +373,11 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	        boton_medio.setBounds(390, 330, 240, 60);
 	        boton_medio.setAccion(() -> {
 	            levelFrame.dispose();
-	            // Aquí inicias el nivel intermedio
-	            // BreakoutGame.startLevel(1);
+	            BreakoutGame.launchMediumLevel(); // se ejecuta el nivel medio
 	        });
 	        levelFrame.add(boton_medio);
+	        
+	        
 
 	        // ------- Vista previa nivel Difícil -------
 	        Canvas previewDificil = new Canvas() {
@@ -387,7 +393,6 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	        boton_dificil.setBounds(660, 330, 240, 60);
 	        boton_dificil.setAccion(() -> {
 	            levelFrame.dispose();
-	            // Aquí inicias el nivel difícil
 	            // BreakoutGame.startLevel(2);
 	        });
 	        levelFrame.add(boton_dificil);
