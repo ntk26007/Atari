@@ -136,6 +136,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		mainMenu.setBounds(220, 120, 120, 40);
 		menu.add(mainMenu);
 
+		//cuando pierdes
 		retry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				menu.dispose();
@@ -203,7 +204,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 
 		nextBtn.addActionListener(e -> {
 			winMenu.dispose();
-			//BreakoutGame.cargarNivelDificil();
+			//BreakoutGame.launchDificilLevel();
 		});
 
 		menuBtn.addActionListener(e -> {
@@ -318,7 +319,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 			this.w = w;
 			this.h = h;
 			this.hits = hits;
-			this.color = hits == 2 ? Color.ORANGE : Color.GREEN;
+			this.color = hits == 2 ? Color.PINK : Color.CYAN;
 		}
 
 		public void hit() {

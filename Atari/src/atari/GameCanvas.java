@@ -279,7 +279,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 
 	        nextBtn.addActionListener(e -> {
 	            winMenu.dispose();
-	            BreakoutGame.restartGame(); // Sustituir lógica de siguiente nivel
+	            BreakoutGame.launchMediumLevel(); //lógica del nivel medio
 	        });
 
 	        menuBtn.addActionListener(e -> {
