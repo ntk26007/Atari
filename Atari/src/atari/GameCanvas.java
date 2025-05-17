@@ -189,11 +189,11 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	    mainMenu.setBounds(220, 120, 120, 40);
 	    menu.add(mainMenu);
 
-	    //lleva al mismo nivel (cuando se implemente el nivel medio mirar pa q vuelva a ese nivel y no al 1)
+	    //lleva al mismo nivel 
 	    retry.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
 	            menu.dispose();
-	            BreakoutGame.restartGame();
+	            BreakoutGame.restartNivelFacil();
 	        }
 	    });
 	    
@@ -272,14 +272,16 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	        menuBtn.setBounds(bx, baseY + 120, bw, bh);
 	        winMenu.add(menuBtn);
 
+	        
+	        //acciones de los botones
 	        retryBtn.addActionListener(e -> {
 	            winMenu.dispose();
-	            BreakoutGame.restartGame();
+	            BreakoutGame.restartNivelFacil();
 	        });
 
 	        nextBtn.addActionListener(e -> {
 	            winMenu.dispose();
-	            BreakoutGame.launchMediumLevel(); //lógica del nivel medio
+	            BreakoutGame.launchMediumLevel(); //ejecuta nivel medio
 	        });
 
 	        menuBtn.addActionListener(e -> {
@@ -326,7 +328,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	        Image imgMedio = Toolkit.getDefaultToolkit().getImage("resources/star2.png");
 	        Image imgDificil = Toolkit.getDefaultToolkit().getImage("resources/star3.png");
 
-	        // ------- Vista previa nivel Fácil -------
+	        // ------- Vista previa nivel Fácil estrella-------
 	        JPanel previewFacil = new JPanel() {
 	            BufferedImage img;
 
@@ -358,6 +360,8 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	            BreakoutGame.launchGame(); //se ejecuta el nivel + facil (por defecto)
 	        });
 	        levelFrame.add(boton_facil);
+	        
+	        
 
 	        // ------- Vista previa nivel Intermedio, cambiar a como lo facil pero se ve mal -------
 	        Canvas previewMedio = new Canvas() {
@@ -393,7 +397,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	        boton_dificil.setBounds(660, 330, 240, 60);
 	        boton_dificil.setAccion(() -> {
 	            levelFrame.dispose();
-	            // BreakoutGame.startLevel(2);
+	            // BreakoutGame.launchDificilLevel();
 	        });
 	        levelFrame.add(boton_dificil);
 

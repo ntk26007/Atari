@@ -28,7 +28,9 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 	private boolean leftPressed, rightPressed;
 	private int lives = 3;
 	private int score = 0;
-	private boolean running;
+	private boolean running = false;
+	private Thread gameThread;
+
 
 	public NivelMedio(int width, int height) {
 		this.width = width;
@@ -36,12 +38,22 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		setPreferredSize(new Dimension(width, height));
 		addKeyListener(this);
 		setFocusable(true);
+		requestFocus();
 		initGame();
 	}
+	
+	// Resetea estado para reiniciar el nivel medio
+		public void resetGame() {
+			initGame();
+			running = true;
+		}
 
 	private void initGame() {
+		//pala + pelota
 		paddle = new Paddle((width - 100) / 2, height - 50, 100, 10, width);
 		ball = new Ball(width / 2, height / 2, 10, 4, 4, width, height);
+		
+		//bloques
 		int rows = 8, cols = 12;
 		int spacing = 5;
 		int sideMargin = width / 20;
@@ -51,8 +63,13 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		int offsetX = sideMargin + spacing;
 		int offsetY = spacing * 9;
 		bricks = new DurabilityBrickManager(rows, cols, brickW, brickH, offsetX, offsetY);
+		
+		//puntuacion
 		lives = 3;
 		score = 0;
+		lives = 3;
+		score = 0;
+		
 	}
 
 	@Override
@@ -86,8 +103,10 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 			ball.update();
 			ball.checkWallCollision();
 			ball.checkPaddleCollision(paddle);
-			if (bricks.checkBallCollision(ball))
-				score++;
+			
+			int puntos = bricks.checkBallCollision(ball); //durabilidad bloques
+			score += puntos;
+
 			if (bricks.isEmpty()) {
 				running = false;
 				winMenu2();
@@ -106,6 +125,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		}
 	}
 
+	//Perder
 	private void showGameOverMenu2() {
 		Frame menu = new Frame("Game Over") {
 			private Image background = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
@@ -136,11 +156,21 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		mainMenu.setBounds(220, 120, 120, 40);
 		menu.add(mainMenu);
 
-		//cuando pierdes
+		//reintentar, esto es lo ultimo q me dijo el chat pero creo que debe ser solo con dos lineas
+		// osea esto = menu.dispose();
+		//			   BreakoutGame.restartNivelMedio();
 		retry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				resetGame();
+				requestFocus();
+
+				if (gameThread == null || !gameThread.isAlive()) {
+				    gameThread = new Thread(NivelMedio.this);
+				    gameThread.start();
+				}
+
 				menu.dispose();
-				//BreakoutGame.restartNivelMedio();
+				BreakoutGame.restartNivelMedio();
 			}
 		});
 
@@ -160,6 +190,8 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		menu.setVisible(true);
 	}
 
+	
+	//Ganar
 	private void winMenu2() {
 		Frame winMenu = new Frame("\u00a1Nivel Completado!") {
 			private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
@@ -199,7 +231,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 
 		retryBtn.addActionListener(e -> {
 			winMenu.dispose();
-			//BreakoutGame.restartNivelMedio();
+			BreakoutGame.restartNivelMedio();
 		});
 
 		nextBtn.addActionListener(e -> {
@@ -249,6 +281,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 			leftPressed = true;
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
 			rightPressed = true;
+		//if (e.getKeyCode() == KeyEvent.VK_P) running = !running; // pausa pero al volver a pulsar no se quita la pausa
 	}
 
 	public void keyReleased(KeyEvent e) {
@@ -278,20 +311,28 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 				}
 		}
 
-		public boolean checkBallCollision(Ball ball) {
-			if (ball.isWaiting())
-				return false;
-			for (DurabilityBrick[] row : grid)
-				for (DurabilityBrick b : row) {
-					if (!b.isBroken() && ball.getBounds().intersects(b.getBounds())) {
-						b.hit();
-						if (b.isBroken())
-							ball.reverseY();
-						return true;
-					}
-				}
-			return false;
+		//maneja la durabilidad de los ladrillos
+		public int checkBallCollision(Ball ball) {
+		    if (ball.isWaiting())
+		        return 0;
+
+		    for (DurabilityBrick[] row : grid) {
+		        for (DurabilityBrick b : row) {
+		            if (!b.isBroken() && ball.getBounds().intersects(b.getBounds())) {
+		                b.hit();
+		                ball.reverseY();
+		                if (b.isBroken()) {
+		                    return 2; // ladrillo destruido (dos toques)
+		                } else {
+		                    return 1; // solo dañado
+		                }
+		            }
+		        }
+		    }
+
+		    return 0; // sin colisión
 		}
+
 
 		public boolean isEmpty() {
 			for (DurabilityBrick[] r : grid)
