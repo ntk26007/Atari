@@ -20,7 +20,10 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.util.Random;
 
-public class NivelMedio extends Canvas implements Runnable, KeyListener {
+import atari.NivelMedio.DurabilityBrick;
+import atari.NivelMedio.DurabilityBrickManager;
+
+public class NivelDificil extends Canvas implements Runnable, KeyListener {
 	private int width, height;
 	private Paddle paddle;
 	private Ball ball;
@@ -30,9 +33,12 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 	private int score = 0;
 	private boolean running = false;
 	private Thread gameThread;
+	private long startTime;
+	private final int TIME_LIMIT = 300_000; // 300,000 ms = 5 minutos
 
 
-	public NivelMedio(int width, int height) {
+
+	public NivelDificil(int width, int height) {
 		this.width = width;
 		this.height = height;
 		setPreferredSize(new Dimension(width, height));
@@ -51,10 +57,11 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 	private void initGame() {
 		//pala + pelota
 		paddle = new Paddle((width - 100) / 2, height - 50, 100, 10, width);
-		ball = new Ball(width / 2, height / 2, 10, 4, 4, width, height);
+		ball = new Ball(width / 2, height - 280, 10, 4, 4, width, height);
+
 		
 		//bloques
-		int rows = 9, cols = 12;
+		int rows = 12, cols = 12;
 		int spacing = 5;
 		int sideMargin = width / 20;
 		int totalSpacingX = (cols + 1) * spacing + sideMargin * 2;
@@ -65,9 +72,9 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		bricks = new DurabilityBrickManager(rows, cols, brickW, brickH, offsetX, offsetY);
 		
 		//puntuacion
-		lives = 3;
+		lives = 2;
 		score = 0;
-		lives = 3;
+		lives = 2;
 		score = 0;
 		
 	}
@@ -77,6 +84,8 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		running = true;
 		long last = System.nanoTime();
 		double nsPerUpdate = 1e9 / 60.0, delta = 0;
+		startTime = System.currentTimeMillis(); //para el temporizador
+
 		while (running) {
 			long now = System.nanoTime();
 			delta += (now - last) / nsPerUpdate;
@@ -94,6 +103,13 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 	}
 
 	private void update() {
+		long elapsed = System.currentTimeMillis() - startTime;
+		if (elapsed >= TIME_LIMIT) {
+		    running = false;
+		    showOverTime(); //cuando se acaba el tiempo salta la pantalla de perder
+		    return;
+		}
+
 		boolean w = ball.isWaiting();
 		if (!w) {
 			if (leftPressed)
@@ -109,7 +125,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 
 			if (bricks.isEmpty()) {
 				running = false;
-				winMenu2();
+				winMenu3();
 			}
 		} else {
 			ball.update();
@@ -118,15 +134,64 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 			lives--;
 			if (lives <= 0) {
 				running = false;
-				showGameOverMenu2();
+				showGameOverMenu3();
 			} else {
 				ball.resetPosition(paddle.getX() + paddle.getWidth() / 2, paddle.getY() - ball.getDiameter());
 			}
 		}
 	}
+	
+	//cuando se acaba el tiempo salta otra ventana
+	private void showOverTime() {
+	    Frame timeOver = new Frame("¡Tiempo agotado!") {
+	        private Image background = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
+
+	        {
+	            Toolkit.getDefaultToolkit().prepareImage(background, -1, -1, null);
+	        }
+
+	        @Override
+	        public void paint(Graphics g) {
+	            g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+	            super.paint(g);
+	        }
+	    };
+
+	    timeOver.setSize(400, 250);
+	    timeOver.setLayout(null);
+	    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+	    timeOver.setLocation((screen.width - 400) / 2, (screen.height - 250) / 2);
+
+	    Button retry = new Button("Reintentar");
+	    retry.setBounds(60, 120, 120, 40);
+	    timeOver.add(retry);
+
+	    Button mainMenu = new Button("Menú");
+	    mainMenu.setBounds(220, 120, 120, 40);
+	    timeOver.add(mainMenu);
+
+	    retry.addActionListener(e -> {
+	        resetGame();
+	        requestFocus();
+	        if (gameThread == null || !gameThread.isAlive()) {
+	            gameThread = new Thread(NivelDificil.this);
+	            gameThread.start();
+	        }
+	        timeOver.dispose();
+	    });
+
+	    mainMenu.addActionListener(e -> {
+	        timeOver.dispose();
+	        BreakoutGame.returnToMenu();
+	    });
+
+	    timeOver.setVisible(true);
+	}
+
+	
 
 	//Perder
-	private void showGameOverMenu2() {
+	private void showGameOverMenu3() {
 		Frame menu = new Frame("Game Over") {
 			private Image background = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
 
@@ -156,21 +221,19 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		mainMenu.setBounds(220, 120, 120, 40);
 		menu.add(mainMenu);
 
-		//reintentar, esto es lo ultimo q me dijo el chat pero creo que debe ser solo con dos lineas
-		// osea esto = menu.dispose();
-		//			   BreakoutGame.restartNivelMedio();
+		
 		retry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetGame();
 				requestFocus();
 
 				if (gameThread == null || !gameThread.isAlive()) {
-				    gameThread = new Thread(NivelMedio.this);
+				    gameThread = new Thread(NivelDificil.this);
 				    gameThread.start();
 				}
 
 				menu.dispose();
-				BreakoutGame.restartNivelMedio();
+				//BreakoutGame.restartNivelDificil();
 			}
 		});
 
@@ -192,7 +255,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 
 	
 	//Ganar
-	private void winMenu2() {
+	private void winMenu3() {
 		Frame winMenu = new Frame("\u00a1Nivel Completado!") {
 			private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
 			{
@@ -221,22 +284,13 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		retryBtn.setBounds(bx, baseY, bw, bh);
 		winMenu.add(retryBtn);
 
-		Button nextBtn = new Button("Siguiente Nivel");
-		nextBtn.setBounds(bx, baseY + 60, bw, bh);
-		winMenu.add(nextBtn);
-
 		Button menuBtn = new Button("Menú");
 		menuBtn.setBounds(bx, baseY + 120, bw, bh);
 		winMenu.add(menuBtn);
 
 		retryBtn.addActionListener(e -> {
 			winMenu.dispose();
-			BreakoutGame.restartNivelMedio();
-		});
-
-		nextBtn.addActionListener(e -> {
-			winMenu.dispose();
-			BreakoutGame.launchDificilLevel();
+			//BreakoutGame.restartNivelDificil();
 		});
 
 		menuBtn.addActionListener(e -> {
@@ -269,6 +323,13 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		g.drawString("Vidas: " + lives, 10, 24);
 		g.drawString("Puntuación: " + score, width - 160, 24);
 		g.setFont(f);
+		
+		//para el temporizador, lo dibuja en la pantalla
+		long remainingTime = Math.max(0, TIME_LIMIT - (System.currentTimeMillis() - startTime));
+		long seconds = remainingTime / 1000;
+		g.drawString("Tiempo: " + seconds + "s", width / 2 - 40, 24);
+
+		
 		paddle.draw(g);
 		ball.draw(g);
 		bricks.draw(g);
@@ -294,10 +355,25 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 	public void keyTyped(KeyEvent e) {
 	}
 
+	
+	
+	/*
+	 * Clases internas para la durabilidad de cada nivel
+	 */
 	class DurabilityBrickManager {
 		private DurabilityBrick[][] grid;
 		private int rows, cols;
 		private Random rand = new Random();
+		Color[] colores = {
+			    Color.RED,
+			    Color.ORANGE,
+			    Color.YELLOW,
+			    Color.GREEN,
+			    Color.BLUE,
+			    new Color(128, 0, 128) // morado 
+			};
+
+
 
 		public DurabilityBrickManager(int rows, int cols, int bw, int bh, int ox, int oy) {
 			this.rows = rows;
@@ -306,8 +382,11 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 			for (int r = 0; r < rows; r++)
 				for (int c = 0; c < cols; c++) {
 					int x = ox + c * (bw + 5), y = oy + r * (bh + 5);
-					int dur = rand.nextBoolean() ? 2 : 1;
-					grid[r][c] = new DurabilityBrick(x, y, bw, bh, dur);
+					int dur = 2 + rand.nextInt(2); //varia entre durabilidad 2 y 3
+					
+//					 int colorIndex = rand.nextInt(colores.length); // índice aleatorio de colores
+//				     Color colorAleatorio = colores[colorIndex]; //sirve pa q aparezcan mas colores iniciales supuestamente pero no salen
+					 grid[r][c] = new DurabilityBrick(x, y, bw, bh, dur);
 				}
 		}
 
@@ -353,21 +432,41 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		private int x, y, w, h, hits;
 		private boolean broken;
 		private Color color;
-
+		
 		public DurabilityBrick(int x, int y, int w, int h, int hits) {
 			this.x = x;
 			this.y = y;
 			this.w = w;
 			this.h = h;
 			this.hits = hits;
-			this.color = hits == 2 ? Color.GREEN : Color.CYAN;
+			if (hits == 3) {
+		        this.color = Color.RED; //durabilidad 3
+		        this.color = Color.CYAN;
+		    } else if (hits == 2) {
+		        this.color = Color.ORANGE; //durabiliad 2
+		    } else {
+		        this.color = Color.PINK;
+		    }
 		}
 
 		public void hit() {
-			hits--;
-			if (hits <= 0)
-				broken = true;
+		    hits--;
+		    if (hits <= 0) {
+		        broken = true;
+		    } else {
+		        updateColor(); // cambiar color según golpes restantes
+		    }
 		}
+
+		//actualiza el color segun el estado del bloque
+		private void updateColor() {
+		    if (hits == 2) {
+		        color = Color.ORANGE;
+		    } else if (hits == 1) {
+		        color = Color.PINK;
+		    }
+		}
+
 
 		public boolean isBroken() {
 			return broken;
@@ -387,3 +486,4 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		}
 	}
 }
+

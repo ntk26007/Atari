@@ -305,18 +305,24 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		};
 
 		levelFrame.setResizable(false);
-		int w = 1000, h = 700;
-		levelFrame.setSize(w, h);
-		levelFrame.setLayout(null);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		int w = screen.width;
+		int h = screen.height;
+		levelFrame.setSize(w, h);
+		levelFrame.setUndecorated(true);
+		levelFrame.setLayout(null);
 		levelFrame.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
 
 		// Medidas comunes
-		int canvasW = 240, canvasH = 160;
-		int botonW = 170, botonH = 60;
-		int gapY = 40;
-		int leftX = (w - (canvasW + 40 + botonW)) / 2;
+		int canvasW = w / 5;       // antes era w / 5
+		int canvasH = h / 5;       // antes era h / 6
+		int botonW = w / 5;        // antes era w / 6
+		int botonH = h / 11;       // antes era h / 12
+		int gapY = h / 14;         // más espacio entre filas
 
+		// Coordenadas horizontales (centrado)
+		int leftX = (w - (canvasW + 60 + botonW)) / 2;  // separador más grande
+		
 		// ------- Fila 1: Fácil -------
 		Image imgFacil = Toolkit.getDefaultToolkit().getImage("resources/star1.png");
 		Canvas previewFacil = new Canvas() {
@@ -328,7 +334,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 				g.drawImage(imgFacil, 0, 0, cw, ch, this);
 			}
 		};
-		int y1 = 60;
+		int y1 = h / 8;
 		previewFacil.setBounds(leftX, y1, canvasW, canvasH);
 		levelFrame.add(previewFacil);
 
@@ -382,21 +388,22 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		boton_dificil.setBounds(leftX + canvasW + 40, y3 + (canvasH - botonH) / 2, botonW, botonH);
 		boton_dificil.setAccion(() -> {
 			levelFrame.dispose();
-			// BreakoutGame.launchDificilLevel();
+			BreakoutGame.launchDificilLevel();
 		});
 		levelFrame.add(boton_dificil);
 
-		// ------- Botón Volver al menú principal -------
-		BotonPersonalizado boton_volver = new BotonPersonalizado("resources/volver.png", 240, 50); // Tamaño más pequeño
-		boton_volver.setBounds(20, 40, 80, 30); // Posición arriba a la izquierda
+		// ------- Botón Volver -------
+		int volverW = w / 20;
+		int volverH = h / 20;
+		BotonPersonalizado boton_volver = new BotonPersonalizado("resources/volver.png", volverW, volverH);
+		boton_volver.setBounds(w - volverW - 40, 40, volverW, volverH); // Arriba a la derecha
 		boton_volver.setAccion(() -> {
-			levelFrame.dispose(); // Solo cierra la ventana
+			levelFrame.dispose();
 		});
 		levelFrame.add(boton_volver);
 
 		levelFrame.setVisible(true);
 	}
-
 
 
 	// Clase interna para botones con fondo negro sólido y imagen encima
