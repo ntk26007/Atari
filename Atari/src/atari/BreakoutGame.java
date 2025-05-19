@@ -55,12 +55,15 @@ public class BreakoutGame {
 	    // ejecuta nivel facil
 	    public static void launchGame() {
 	        gameWindow = new Frame("Atari Breakout");
+	        
 	        // Pantalla completa para juego
 	        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 	        int sw = screenSize.width;
 	        int sh = screenSize.height;
 	        gameWindow.setSize(sw, sh);
 	        gameWindow.setResizable(false);
+	        gameWindow.setUndecorated(true);
+	        gameWindow.setLocation((screenSize.width - sw) / 2, (screenSize.height - sh) / 2);
 
 	        // Crear canvas con dimensiones de pantalla completa
 	        canvas = new GameCanvas(sw, sh);
@@ -87,6 +90,8 @@ public class BreakoutGame {
 	        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	        gameWindow.setSize(screen.width, screen.height);
 	        gameWindow.setLayout(new BorderLayout());
+	        gameWindow.setResizable(false);
+	        gameWindow.setUndecorated(true);
 
 	        NivelMedio mediumCanvas = new NivelMedio(screen.width, screen.height);
 	        currentCanvas = mediumCanvas;
@@ -113,6 +118,8 @@ public class BreakoutGame {
 	        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	        gameWindow.setSize(screen.width, screen.height);
 	        gameWindow.setLayout(new BorderLayout());
+	        gameWindow.setResizable(false);
+	        gameWindow.setUndecorated(true);
 
 	        NivelDificil hardCanvas = new NivelDificil(screen.width, screen.height);
 	        currentCanvas = hardCanvas;
@@ -129,6 +136,34 @@ public class BreakoutGame {
 	        gameWindow.setVisible(true);
 	        hardCanvas.requestFocus();
 	        new Thread(hardCanvas).start();
+	    }
+	    
+
+	    //ejecuta nivel extra
+	    public static void launchExtraLevel() {
+	        if (gameWindow != null) gameWindow.dispose(); 
+	        gameWindow = new Frame("Atari Breakout – Nivel Dificil");
+	        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+	        gameWindow.setSize(screen.width, screen.height);
+	        gameWindow.setLayout(new BorderLayout());
+	        gameWindow.setResizable(false);
+	        gameWindow.setUndecorated(true);
+
+	        NivelExtra extraCanvas = new NivelExtra(screen.width, screen.height);
+	        currentCanvas = extraCanvas;
+	        gameWindow.add(extraCanvas, BorderLayout.CENTER);
+
+	        gameWindow.addWindowListener(new WindowAdapter() {
+	            @Override
+	            public void windowClosing(WindowEvent e) {
+	                gameWindow.dispose();
+	                MainMenu.main(null);
+	            }
+	        });
+
+	        gameWindow.setVisible(true);
+	        extraCanvas.requestFocus();
+	        new Thread(extraCanvas).start();
 	    }
 	    
 	    

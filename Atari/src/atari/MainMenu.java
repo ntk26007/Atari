@@ -15,8 +15,11 @@ public class MainMenu extends Frame {
         // Pantalla completa
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int sw = screenSize.width, sh = screenSize.height;
+        setLayout(null);
         setSize(sw, sh);
-        setLayout(null); // posicionamiento manual
+        setResizable(false);
+        setUndecorated(true);
+        
 
         // Tamaños de botones
         int bw = sw / 4;

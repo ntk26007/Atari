@@ -23,7 +23,7 @@ import java.util.Random;
 import atari.NivelMedio.DurabilityBrick;
 import atari.NivelMedio.DurabilityBrickManager;
 
-public class NivelDificil extends Canvas implements Runnable, KeyListener {
+public class NivelExtra extends Canvas implements Runnable, KeyListener {
 	private int width, height;
 	private Paddle paddle;
 	private Ball ball;
@@ -38,7 +38,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 
 
 
-	public NivelDificil(int width, int height) {
+	public NivelExtra(int width, int height) {
 		this.width = width;
 		this.height = height;
 		setPreferredSize(new Dimension(width, height));
@@ -174,7 +174,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 	        resetGame();
 	        requestFocus();
 	        if (gameThread == null || !gameThread.isAlive()) {
-	            gameThread = new Thread(NivelDificil.this);
+	            gameThread = new Thread(NivelExtra.this);
 	            gameThread.start();
 	        }
 	        timeOver.dispose();
@@ -228,7 +228,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 				requestFocus();
 
 				if (gameThread == null || !gameThread.isAlive()) {
-				    gameThread = new Thread(NivelDificil.this);
+				    gameThread = new Thread(NivelExtra.this);
 				    gameThread.start();
 				}
 
@@ -299,7 +299,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		
 		nextBtn.addActionListener(e -> {
 			winMenu.dispose();
-			BreakoutGame.launchExtraLevel();
+			//BreakoutGame.launchExtraLevel();
 		});
 
 		menuBtn.addActionListener(e -> {
@@ -495,4 +495,5 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		}
 	}
 }
+
 
