@@ -18,6 +18,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import atari.NivelMedio.DurabilityBrick;
@@ -69,13 +71,20 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
 		int brickH = height / 25;
 		int offsetX = sideMargin + spacing;
 		int offsetY = spacing * 9;
-		bricks = new DurabilityBrickManager(rows, cols, brickW, brickH, offsetX, offsetY);
+		bricks = new DurabilityBrickManager();
+		
+		int centerX = 300;
+		int centerY = 150;
+		int brickWidth = 40;
+		int brickHeight = 20;
+		int durability = 3;
+
+		//brickManager.addStarShape(centerX, centerY, brickWidth, brickHeight, durability);
 		
 		//puntuacion
 		lives = 2;
 		score = 0;
-		lives = 2;
-		score = 0;
+
 		
 	}
 
@@ -120,24 +129,24 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
 			ball.checkWallCollision();
 			ball.checkPaddleCollision(paddle);
 			
-			int puntos = bricks.checkBallCollision(ball); //durabilidad bloques
-			score += puntos;
+			//int puntos = bricks.checkBallCollision(ball); //durabilidad bloques
+			//score += puntos;
 
-			if (bricks.isEmpty()) {
-				running = false;
-				winMenu3();
-			}
-		} else {
-			ball.update();
-		}
-		if (!w && ball.isWaiting()) {
-			lives--;
-			if (lives <= 0) {
-				running = false;
-				showGameOverMenu3();
-			} else {
-				ball.resetPosition(paddle.getX() + paddle.getWidth() / 2, paddle.getY() - ball.getDiameter());
-			}
+//			if (bricks.isEmpty()) {
+//				running = false;
+//				winMenu3();
+//			}
+//		} else {
+//			ball.update();
+//		}
+//		if (!w && ball.isWaiting()) {
+//			lives--;
+//			if (lives <= 0) {
+//				running = false;
+//				showGameOverMenu3();
+//			} else {
+//				ball.resetPosition(paddle.getX() + paddle.getWidth() / 2, paddle.getY() - ball.getDiameter());
+//			}
 		}
 	}
 	
@@ -369,130 +378,107 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
 	/*
 	 * Clases internas para la durabilidad de cada nivel
 	 */
-	class DurabilityBrickManager {
-		private DurabilityBrick[][] grid;
-		private int rows, cols;
-		private Random rand = new Random();
-		Color[] colores = {
-			    Color.RED,
-			    Color.ORANGE,
-			    Color.YELLOW,
-			    Color.GREEN,
-			    Color.BLUE,
-			    new Color(128, 0, 128) // morado 
-			};
+	public class DurabilityBrickManager {
+	    private List<DurabilityBrick> bricks;
 
+	    public DurabilityBrickManager() {
+	        bricks = new ArrayList<>();
+	    }
 
+	    public void addBrick(DurabilityBrick brick) {
+	        bricks.add(brick);
+	    }
 
-		public DurabilityBrickManager(int rows, int cols, int bw, int bh, int ox, int oy) {
-			this.rows = rows;
-			this.cols = cols;
-			grid = new DurabilityBrick[rows][cols];
-			for (int r = 0; r < rows; r++)
-				for (int c = 0; c < cols; c++) {
-					int x = ox + c * (bw + 5), y = oy + r * (bh + 5);
-					int dur = 2 + rand.nextInt(2); //varia entre durabilidad 2 y 3
-					
-//					 int colorIndex = rand.nextInt(colores.length); // índice aleatorio de colores
-//				     Color colorAleatorio = colores[colorIndex]; //sirve pa q aparezcan mas colores iniciales supuestamente pero no salen
-					 grid[r][c] = new DurabilityBrick(x, y, bw, bh, dur);
-				}
-		}
+	    public void update(Ball ball, ScoreManager scoreManager) {
+	        for (DurabilityBrick brick : bricks) {
+	            if (!brick.isDestroyed() && brick.getBounds().intersects(ball.getBounds())) {
+	                brick.hit();
+	                ball.reverseY();
+	                scoreManager.increment(100);
+	                break;
+	            }
+	        }
+	    }
 
-		//maneja la durabilidad de los ladrillos
-		public int checkBallCollision(Ball ball) {
-		    if (ball.isWaiting())
-		        return 0;
+	    public void draw(Graphics g) {
+	        for (DurabilityBrick brick : bricks) {
+	            brick.draw(g);
+	        }
+	    }
 
-		    for (DurabilityBrick[] row : grid) {
-		        for (DurabilityBrick b : row) {
-		            if (!b.isBroken() && ball.getBounds().intersects(b.getBounds())) {
-		                b.hit();
-		                ball.reverseY();
-		                if (b.isBroken()) {
-		                    return 2; // ladrillo destruido (dos toques)
-		                } else {
-		                    return 1; // solo dañado
-		                }
-		            }
-		        }
-		    }
+	    public boolean areAllBricksDestroyed() {
+	        for (DurabilityBrick brick : bricks) {
+	            if (!brick.isDestroyed()) return false;
+	        }
+	        return true;
+	    }
 
-		    return 0; // sin colisión
-		}
+	    public void reset() {
+	        for (DurabilityBrick brick : bricks) {
+	            brick.reset();
+	        }
+	    }
 
+	    //  Dibuja una estrella en base a coordenadas y tamaño
+	    public void addStarShape(int centerX, int centerY, int brickWidth, int brickHeight, int durability) {
+	        int[][] starCoords = {
+	            {0, -2}, {1, -1}, {2, -1}, {1, 0}, {2, 1},
+	            {0, 1}, {-2, 1}, {-1, 0}, {-2, -1}, {-1, -1}
+	        };
 
-		public boolean isEmpty() {
-			for (DurabilityBrick[] r : grid)
-				for (DurabilityBrick b : r)
-					if (!b.isBroken())
-						return false;
-			return true;
-		}
+	        for (int[] coord : starCoords) {
+	            int x = centerX + coord[0] * (brickWidth + 2);
+	            int y = centerY + coord[1] * (brickHeight + 2);
+	            bricks.add(new DurabilityBrick(x, y, brickWidth, brickHeight, durability));
+	        }
 
-		public void draw(Graphics2D g) {
-			for (DurabilityBrick[] r : grid)
-				for (DurabilityBrick b : r)
-					b.draw(g);
-		}
+	        // Centro de la estrella
+	        bricks.add(new DurabilityBrick(centerX, centerY, brickWidth, brickHeight, durability));
+	    }
 	}
 
-	class DurabilityBrick {
-		private int x, y, w, h, hits;
-		private boolean broken;
-		private Color color;
-		
-		public DurabilityBrick(int x, int y, int w, int h, int hits) {
-			this.x = x;
-			this.y = y;
-			this.w = w;
-			this.h = h;
-			this.hits = hits;
-			if (hits == 3) {
-		        this.color = Color.RED; //durabilidad 3
-		        this.color = Color.CYAN;
-		    } else if (hits == 2) {
-		        this.color = Color.ORANGE; //durabiliad 2
-		    } else {
-		        this.color = Color.PINK;
-		    }
-		}
+	//la otra clase
+	public class DurabilityBrick {
+	    private int x, y, width, height;
+	    private int durability;
+	    private final int initialDurability;
 
-		public void hit() {
-		    hits--;
-		    if (hits <= 0) {
-		        broken = true;
-		    } else {
-		        updateColor(); // cambiar color según golpes restantes
-		    }
-		}
+	    public DurabilityBrick(int x, int y, int width, int height, int durability) {
+	        this.x = x;
+	        this.y = y;
+	        this.width = width;
+	        this.height = height;
+	        this.durability = durability;
+	        this.initialDurability = durability;
+	    }
 
-		//actualiza el color segun el estado del bloque
-		private void updateColor() {
-		    if (hits == 2) {
-		        color = Color.ORANGE;
-		    } else if (hits == 1) {
-		        color = Color.PINK;
-		    }
-		}
+	    public void draw(Graphics g) {
+	        if (!isDestroyed()) {
+	            if (durability == 3) g.setColor(Color.RED);
+	            else if (durability == 2) g.setColor(Color.ORANGE);
+	            else g.setColor(Color.YELLOW);
 
+	            g.fillRect(x, y, width, height);
+	            g.setColor(Color.BLACK);
+	            g.drawRect(x, y, width, height);
+	        }
+	    }
 
-		public boolean isBroken() {
-			return broken;
-		}
+	    public void hit() {
+	        if (durability > 0) durability--;
+	    }
 
-		public Rectangle getBounds() {
-			return new Rectangle(x, y, w, h);
-		}
+	    public boolean isDestroyed() {
+	        return durability <= 0;
+	    }
 
-		public void draw(Graphics2D g) {
-			if (!broken) {
-				g.setColor(color);
-				g.fillRect(x, y, w, h);
-				g.setColor(Color.BLACK);
-				g.drawRect(x, y, w, h);
-			}
-		}
+	    public Rectangle getBounds() {
+	        return new Rectangle(x, y, width, height);
+	    }
+
+	    public void reset() {
+	        durability = initialDurability;
+	    }
 	}
 }
 
