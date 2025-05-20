@@ -7,7 +7,7 @@ public class FuentePersonalizada {
 
     public static Font cargarFuente(float tamaño) {
         try {
-            InputStream is = FuentePersonalizada.class.getResourceAsStream("/fonts/fuente.ttf");
+            InputStream is = FuentePersonalizada.class.getResourceAsStream("/fonts/fuente.TTF");
             Font fuente = Font.createFont(Font.TRUETYPE_FONT, is);
             fuente = fuente.deriveFont(tamaño); // Puedes pasar tamaño como 20f, 32f, etc.
 

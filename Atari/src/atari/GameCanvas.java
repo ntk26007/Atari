@@ -323,88 +323,180 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		// Coordenadas horizontales (centrado)
 		int leftX = (w - (canvasW + 60 + botonW)) / 2;  // separador más grande
 		
+//		// ------- Fila 1: Fácil -------
+//		Image imgFacil = Toolkit.getDefaultToolkit().getImage("resources/star1.png");
+//		Canvas previewFacil = new Canvas() {
+//			@Override
+//			public void paint(Graphics g) {
+//				int cw = getWidth(), ch = getHeight();
+//				g.setColor(Color.BLACK);
+//				g.fillRect(0, 0, cw, ch);
+//				g.drawImage(imgFacil, 0, 0, cw, ch, this);
+//			}
+//		};
+//		int y1 = h / 8;
+//		previewFacil.setBounds(leftX, y1, canvasW, canvasH);
+//		levelFrame.add(previewFacil);
+//
+//		BotonPersonalizado boton_facil = new BotonPersonalizado("resources/facil.png", botonW, botonH);
+//		boton_facil.setBounds(leftX + canvasW + 40, y1 + (canvasH - botonH) / 2, botonW, botonH);
+//		boton_facil.setAccion(() -> {
+//			levelFrame.dispose();
+//			BreakoutGame.launchGame();
+//		});
+//		levelFrame.add(boton_facil);
+//
+//		// ------- Fila 2: Intermedio -------
+//		Image imgMedio = Toolkit.getDefaultToolkit().getImage("resources/star2.png");
+//		Canvas previewMedio = new Canvas() {
+//			@Override
+//			public void paint(Graphics g) {
+//				int cw = getWidth(), ch = getHeight();
+//				g.setColor(Color.BLACK);
+//				g.fillRect(0, 0, cw, ch);
+//				g.drawImage(imgMedio, 0, 0, cw, ch, this);
+//			}
+//		};
+//		int y2 = y1 + canvasH + gapY;
+//		previewMedio.setBounds(leftX, y2, canvasW, canvasH);
+//		levelFrame.add(previewMedio);
+//
+//		BotonPersonalizado boton_medio = new BotonPersonalizado("resources/medio.png", botonW, botonH);
+//		boton_medio.setBounds(leftX + canvasW + 40, y2 + (canvasH - botonH) / 2, botonW, botonH);
+//		boton_medio.setAccion(() -> {
+//			levelFrame.dispose();
+//			BreakoutGame.launchMediumLevel();
+//		});
+//		levelFrame.add(boton_medio);
+//
+//		// ------- Fila 3: Difícil -------
+//		Image imgDificil = Toolkit.getDefaultToolkit().getImage("resources/star3.png");
+//		Canvas previewDificil = new Canvas() {
+//			@Override
+//			public void paint(Graphics g) {
+//				int cw = getWidth(), ch = getHeight();
+//				g.setColor(Color.BLACK);
+//				g.fillRect(0, 0, cw, ch);
+//				g.drawImage(imgDificil, 0, 0, cw, ch, this);
+//			}
+//		};
+//		int y3 = y2 + canvasH + gapY;
+//		previewDificil.setBounds(leftX, y3, canvasW, canvasH);
+//		levelFrame.add(previewDificil);
+//
+//		BotonPersonalizado boton_dificil = new BotonPersonalizado("resources/dificil.png", botonW, botonH);
+//		boton_dificil.setBounds(leftX + canvasW + 40, y3 + (canvasH - botonH) / 2, botonW, botonH);
+//		boton_dificil.setAccion(() -> {
+//			levelFrame.dispose();
+//			BreakoutGame.launchDificilLevel();
+//		});
+//		levelFrame.add(boton_dificil);
+
+		// Cargar la fuente personalizada
+        Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
+		
 		// ------- Fila 1: Fácil -------
 		Image imgFacil = Toolkit.getDefaultToolkit().getImage("resources/star1.png");
 		Canvas previewFacil = new Canvas() {
-			@Override
-			public void paint(Graphics g) {
-				int cw = getWidth(), ch = getHeight();
-				g.setColor(Color.BLACK);
-				g.fillRect(0, 0, cw, ch);
-				g.drawImage(imgFacil, 0, 0, cw, ch, this);
-			}
+		    @Override
+		    public void paint(Graphics g) {
+		        int cw = getWidth(), ch = getHeight();
+		        g.setColor(Color.BLACK);
+		        g.fillRect(0, 0, cw, ch);
+		        g.drawImage(imgFacil, 0, 0, cw, ch, this);
+		    }
 		};
 		int y1 = h / 8;
 		previewFacil.setBounds(leftX, y1, canvasW, canvasH);
 		levelFrame.add(previewFacil);
 
-		BotonPersonalizado boton_facil = new BotonPersonalizado("resources/facil.png", botonW, botonH);
+		BotonPersonalizado boton_facil = new BotonPersonalizado("Facil", botonW, botonH);
+		boton_facil.setColorFondo(Color.BLUE.darker());
 		boton_facil.setBounds(leftX + canvasW + 40, y1 + (canvasH - botonH) / 2, botonW, botonH);
+		boton_facil.setFont(fuentePersonalizada);
 		boton_facil.setAccion(() -> {
-			levelFrame.dispose();
-			BreakoutGame.launchGame();
+		    levelFrame.dispose();
+		    BreakoutGame.launchGame();
 		});
 		levelFrame.add(boton_facil);
 
 		// ------- Fila 2: Intermedio -------
 		Image imgMedio = Toolkit.getDefaultToolkit().getImage("resources/star2.png");
 		Canvas previewMedio = new Canvas() {
-			@Override
-			public void paint(Graphics g) {
-				int cw = getWidth(), ch = getHeight();
-				g.setColor(Color.BLACK);
-				g.fillRect(0, 0, cw, ch);
-				g.drawImage(imgMedio, 0, 0, cw, ch, this);
-			}
+		    @Override
+		    public void paint(Graphics g) {
+		        int cw = getWidth(), ch = getHeight();
+		        g.setColor(Color.BLACK);
+		        g.fillRect(0, 0, cw, ch);
+		        g.drawImage(imgMedio, 0, 0, cw, ch, this);
+		    }
 		};
 		int y2 = y1 + canvasH + gapY;
 		previewMedio.setBounds(leftX, y2, canvasW, canvasH);
 		levelFrame.add(previewMedio);
 
-		BotonPersonalizado boton_medio = new BotonPersonalizado("resources/medio.png", botonW, botonH);
+		BotonPersonalizado boton_medio = new BotonPersonalizado("Intermedio", botonW, botonH);
+		boton_medio.setColorFondo(Color.YELLOW.darker());
 		boton_medio.setBounds(leftX + canvasW + 40, y2 + (canvasH - botonH) / 2, botonW, botonH);
+		boton_medio.setFont(fuentePersonalizada.deriveFont(35f)); 
 		boton_medio.setAccion(() -> {
-			levelFrame.dispose();
-			BreakoutGame.launchMediumLevel();
+		    levelFrame.dispose();
+		    BreakoutGame.launchMediumLevel();
 		});
 		levelFrame.add(boton_medio);
 
 		// ------- Fila 3: Difícil -------
 		Image imgDificil = Toolkit.getDefaultToolkit().getImage("resources/star3.png");
 		Canvas previewDificil = new Canvas() {
-			@Override
-			public void paint(Graphics g) {
-				int cw = getWidth(), ch = getHeight();
-				g.setColor(Color.BLACK);
-				g.fillRect(0, 0, cw, ch);
-				g.drawImage(imgDificil, 0, 0, cw, ch, this);
-			}
+		    @Override
+		    public void paint(Graphics g) {
+		        int cw = getWidth(), ch = getHeight();
+		        g.setColor(Color.BLACK);
+		        g.fillRect(0, 0, cw, ch);
+		        g.drawImage(imgDificil, 0, 0, cw, ch, this);
+		    }
 		};
 		int y3 = y2 + canvasH + gapY;
 		previewDificil.setBounds(leftX, y3, canvasW, canvasH);
 		levelFrame.add(previewDificil);
 
-		BotonPersonalizado boton_dificil = new BotonPersonalizado("resources/dificil.png", botonW, botonH);
+		BotonPersonalizado boton_dificil = new BotonPersonalizado("Dificil", botonW, botonH);
+		boton_dificil.setColorFondo(Color.RED.darker());
 		boton_dificil.setBounds(leftX + canvasW + 40, y3 + (canvasH - botonH) / 2, botonW, botonH);
+		boton_dificil.setFont(fuentePersonalizada);
 		boton_dificil.setAccion(() -> {
-			levelFrame.dispose();
-			BreakoutGame.launchDificilLevel();
+		    levelFrame.dispose();
+		    BreakoutGame.launchDificilLevel();
 		});
 		levelFrame.add(boton_dificil);
-
+		
 		// ------- Botón Volver -------
 		int volverW = w / 20;
 		int volverH = h / 20;
-		BotonPersonalizado boton_volver = new BotonPersonalizado("resources/volver.png", volverW, volverH);
-		boton_volver.setBounds(w - volverW - 40, 40, volverW, volverH); // Arriba a la derecha
+
+		// Creas el botón con un texto (puede ser vacío si solo quieres imagen)
+		BotonPersonalizado boton_volver = new BotonPersonalizado("", volverW, volverH);
+
+		// Le asignas la imagen que quieres mostrar
+		boton_volver.setImagen("resources/volver.png");
+
+		// Ajustas la posición y tamaño del botón
+		boton_volver.setBounds(w - volverW - 40, 40, volverW, volverH);
+
+		// Acción del botón
 		boton_volver.setAccion(() -> {
-			levelFrame.dispose();
+		    levelFrame.dispose();
 		});
+
 		levelFrame.add(boton_volver);
-
 		levelFrame.setVisible(true);
-	}
 
+
+	}
+/*BotonPersonalizado boton = new BotonPersonalizado("Click aquí", 200, 60);
+boton.setColorFondo(Color.BLUE);
+boton.setImagen("ruta/a/tu/imagen.png");  // <- carga la imagen
+*/
 
 	// Clase interna para botones con fondo negro sólido y imagen encima
 //	static class BotonPersonalizado extends Canvas {
