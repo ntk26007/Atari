@@ -466,7 +466,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		boton_dificil.setFont(fuentePersonalizada);
 		boton_dificil.setAccion(() -> {
 		    levelFrame.dispose();
-		    BreakoutGame.launchDificilLevel();
+		    BreakoutGame.launchDificilLevel(); 
 		});
 		levelFrame.add(boton_dificil);
 		

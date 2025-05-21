@@ -56,8 +56,8 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 
 	private void initGame() {
 		//pala + pelota
-		paddle = new Paddle((width - 100) / 2, height - 50, 100, 10, width);
-		ball = new Ball(width / 2, height - 280, 10, 4, 4, width, height);
+		paddle = new Paddle((width - 100) / 2, height - 50, 700, 10, width);
+		ball = new Ball(width / 2, height - 280, 10, 10, 10, width, height);
 
 		
 		//bloques
@@ -294,7 +294,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 
 		retryBtn.addActionListener(e -> {
 			winMenu.dispose();
-			//BreakoutGame.restartNivelDificil();
+			//BreakoutGame.restartNivelDificil(); funciona bien sin poner esto
 		});
 		
 		nextBtn.addActionListener(e -> {
