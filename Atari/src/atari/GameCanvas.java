@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -154,7 +155,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	// muestra ventana cuando se acaban las vidas
 	private void showGameOverMenu() {
 		Frame menu = new Frame("Game Over") {
-			private Image background = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
+			private Image background = Toolkit.getDefaultToolkit().getImage("resources/sombra2 (1).jpg");
 
 			{
 				Toolkit.getDefaultToolkit().prepareImage(background, -1, -1, null);
@@ -163,23 +164,48 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 			@Override
 			public void paint(Graphics g) {
 				g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+
+				// Dibuja el texto
+				Graphics2D g2d = (Graphics2D) g;
+				g2d.setColor(Color.RED); 
+				g2d.setFont(new Font("Verdana", Font.BOLD, 52)); // Fuente del texto
+
+				String text = "GAME OVER";
+				FontMetrics fm = g2d.getFontMetrics();
+				int textWidth = fm.stringWidth(text);
+				int x = (getWidth() - textWidth) / 2;
+				int y = 100; // Ajusta según posición deseada sobre los botones
+
+				g2d.drawString(text, x, y);
+
 				super.paint(g);
 			}
 		};
 
+
 		menu.setResizable(false);
-		int w = 400, h = 250;
+		int w = 500, h = 300;
 		menu.setSize(w, h);
 		menu.setLayout(null);
+		menu.setUndecorated(true);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		menu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
+		
+		//colocar botones
+		int buttonWidth = 140;
+		int buttonHeight = 50;
+		int buttonY = 220;
+		int spacing = 40;
+
 
 		Button retry = new Button("Reintentar");
-		retry.setBounds(60, 120, 120, 40);
+		//retry.setBackground(Color.CYAN);
+		retry.setBounds((w / 2) - buttonWidth - (spacing / 2), buttonY, buttonWidth, buttonHeight);
 		menu.add(retry);
 
-		Button mainMenu = new Button("Menú");
-		mainMenu.setBounds(220, 120, 120, 40);
+		Button mainMenu = new Button("Volver a menú");
+		//mainMenu.setBackground(Color.CYAN);
+		mainMenu.setBounds((w / 2) + (spacing / 2), buttonY, buttonWidth, buttonHeight);
 		menu.add(mainMenu);
 
 		// lleva al mismo nivel
@@ -249,6 +275,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		int w = 400, h = 300;
 		winMenu.setSize(w, h);
 		winMenu.setLayout(null);
+		winMenu.setUndecorated(true);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		winMenu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
 
