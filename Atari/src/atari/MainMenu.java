@@ -66,6 +66,10 @@ public class MainMenu extends Frame {
                 System.exit(0);
             }
         });
+        
+        //musica fondo
+        AudioPlayer.detenerAudio();
+	    AudioPlayer.reproducirAudio("Resources/menu.wav"); 
 
         setVisible(true);
     }

@@ -38,6 +38,9 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		setFocusable(true);
 		requestFocus();
 		initGame();
+		
+		AudioPlayer.detenerAudio();
+	    AudioPlayer.reproducirAudio("Resources/facil.wav"); 
 	}
 
 	// Resetea estado para reiniciar partida
@@ -221,6 +224,8 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		retry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				menu.dispose();
+				AudioPlayer.detenerAudio(); // Detener cualquier sonido
+		        AudioPlayer.reproducirAudio("Resources/facil.wav");
 				BreakoutGame.restartNivelFacil();
 			}
 		});
@@ -229,6 +234,8 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		mainMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				menu.dispose();
+				AudioPlayer.detenerAudio(); 
+		        AudioPlayer.reproducirAudio("Resources/menu.wav");
 				BreakoutGame.returnToMenu();
 			}
 		});
@@ -238,6 +245,11 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 				menu.dispose();
 			}
 		});
+		
+		//sonido en concreto para perder
+		AudioPlayer.detenerAudio();
+		AudioPlayer.reproducirAudioUnaVez("Resources/gameOver.wav");
+
 
 		menu.setVisible(true);
 	}
@@ -318,11 +330,15 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 
 		nextBtn.addActionListener(e -> {
 			winMenu.dispose();
+			AudioPlayer.detenerAudio(); 
+	        AudioPlayer.reproducirAudio("Resources/facil.wav");
 			BreakoutGame.launchMediumLevel(); // ejecuta nivel medio
 		});
 
 		menuBtn.addActionListener(e -> {
 			winMenu.dispose();
+			AudioPlayer.detenerAudio(); 
+		    AudioPlayer.reproducirAudio("Resources/menu.wav");
 			BreakoutGame.returnToMenu();
 		});
 
@@ -331,6 +347,11 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 				winMenu.dispose();
 			}
 		});
+		
+		//sonido en concreto para ganar
+		AudioPlayer.detenerAudio();
+	    AudioPlayer.reproducirAudioUnaVez("Resources/win.wav"); 
+
 
 		winMenu.setResizable(false);
 		winMenu.setVisible(true);
@@ -346,7 +367,13 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 				super.paint(g);
 			}
 		};
+		
+		//ponemos esta condicion para que la musica del menu se continue al mismo tiempo cuando pasamos al panel de los niveles
+		if (!AudioPlayer.isPlaying()) { //el metodo comprueba que la musica en concreto se siga ejecutando
+		    AudioPlayer.reproducirAudio("Assets/facil.wav");
+		}
 
+		
 		levelFrame.setResizable(false);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		int w = screen.width;
@@ -536,51 +563,4 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 
 
 	}
-/*BotonPersonalizado boton = new BotonPersonalizado("Click aquí", 200, 60);
-boton.setColorFondo(Color.BLUE);
-boton.setImagen("ruta/a/tu/imagen.png");  // <- carga la imagen
-*/
-
-	// Clase interna para botones con fondo negro sólido y imagen encima
-//	static class BotonPersonalizado extends Canvas {
-//		private Image img;
-//		private int ancho, alto;
-//		private Runnable accion;
-//
-//		public BotonPersonalizado(String rutaImagen, int ancho, int alto) {
-//			this.ancho = ancho;
-//			this.alto = alto;
-//			try {
-//				img = Toolkit.getDefaultToolkit().getImage(rutaImagen);
-//				Toolkit.getDefaultToolkit().prepareImage(img, -1, -1, null);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//			setSize(ancho, alto);
-//			addMouseListener(new java.awt.event.MouseAdapter() {
-//				@Override
-//				public void mouseClicked(java.awt.event.MouseEvent e) {
-//					if (accion != null) {
-//						accion.run();
-//					}
-//				}
-//			});
-//		}
-//
-//		public void setAccion(Runnable accion) {
-//			this.accion = accion;
-//		}
-//
-//		@Override
-//		public void paint(Graphics g) {
-//			// Fondo negro sólido
-//			g.setColor(Color.BLACK);
-//			g.fillRect(0, 0, getWidth(), getHeight());
-//
-//			// Dibuja la imagen escalada
-//			if (img != null) {
-//				g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
-//			}
-//		}
-//	}
 }
