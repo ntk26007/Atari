@@ -46,6 +46,9 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		setFocusable(true);
 		requestFocus();
 		initGame();
+		
+		AudioPlayer.detenerAudio();
+	    AudioPlayer.reproducirAudio("Resources/facil.wav");
 	}
 	
 	// Resetea estado para reiniciar el nivel medio
@@ -126,6 +129,10 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 			
 			int puntos = bricks.checkBallCollision(ball); //durabilidad bloques
 			score += puntos;
+			
+			if (puntos > 0) {
+	            AudioPlayer.reproducirEfecto("Resources/bloque.wav");
+	        }
 
 			if (bricks.isEmpty()) {
 				running = false;
@@ -163,6 +170,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 
 	    timeOver.setSize(400, 250);
 	    timeOver.setLayout(null);
+		timeOver.setUndecorated(true);
 	    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	    timeOver.setLocation((screen.width - 400) / 2, (screen.height - 250) / 2);
 
@@ -216,6 +224,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		int w = 400, h = 250;
 		menu.setSize(w, h);
 		menu.setLayout(null);
+		menu.setUndecorated(true);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		menu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
 
@@ -283,6 +292,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		int w = 500, h = 300;
 		winMenu.setSize(w, h);
 		winMenu.setLayout(null);
+		winMenu.setUndecorated(true);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		winMenu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
 

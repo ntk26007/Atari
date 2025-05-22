@@ -31,6 +31,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	private int score;
 
 	public GameCanvas(int width, int height) {
+		//AudioPlayer.cargarEfecto("bloque", "Resources/bloque.wav");
 		this.width = width;
 		this.height = height;
 		setPreferredSize(new Dimension(width, height));
@@ -97,6 +98,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 
 	// movimiento pala
 	private void update() {
+
 		boolean wasWaiting = ball.isWaiting();
 		if (leftPressed)
 			paddle.moveLeft();
@@ -110,8 +112,11 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 			ball.update();
 			ball.checkWallCollision();
 			ball.checkPaddleCollision(paddle);
-			if (bricks.checkBallCollision(ball))
+			if (bricks.checkBallCollision(ball)) {
+				AudioPlayer.reproducirEfecto("Resources/bloque.wav");
 				score++;
+			}
+			
 			if (bricks.isEmpty()) {
 				running = false;
 				winMenu(); // Mostrar el menú de victoria

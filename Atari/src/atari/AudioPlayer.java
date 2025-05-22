@@ -1,12 +1,17 @@
 package atari;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
  * 0.0f = volumen estandar.
@@ -25,6 +30,7 @@ public class AudioPlayer {
 	private static Clip clip;
     private static FloatControl volumeControl;
     private static final float VOLUMEN_PREDETERMINADO = -14.0f; // volumen bajo (en decibelios)
+    private static HashMap<String, Clip> efectos = new HashMap<>();
 
     public static void reproducirAudio(String ruta) {
         detenerAudio(); // si ya había un audio sonando, lo detenemos
@@ -72,6 +78,45 @@ public class AudioPlayer {
             e.printStackTrace();
         }
     }
+    
+    //deberia ser pal delay pero no va asiq se queda asi (no hace na)
+    public static void cargarEfecto(String nombre, String ruta) {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(ruta));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            efectos.put(nombre, clip);
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    //metodo que nos sirve para reproducir sonidos muy cortos, para el efecto de los bloques
+    public static void reproducirEfecto(String ruta) {
+        try {
+            AudioInputStream audioInput = AudioSystem.getAudioInputStream(new File(ruta));
+            Clip efecto = AudioSystem.getClip();
+            efecto.open(audioInput);
+
+            // Reducir el volumen (valor en decibelios)
+            FloatControl volume = (FloatControl) efecto.getControl(FloatControl.Type.MASTER_GAIN);
+            volume.setValue(-8.0f); // -10.0f para más bajo
+
+            efecto.start(); // Solo se reproduce una vez
+
+            // Cierra el clip cuando termine para liberar recursos
+            efecto.addLineListener(event -> {
+                if (event.getType() == LineEvent.Type.STOP) {
+                    efecto.close();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     
     public static boolean isPlaying() {
         return clip != null && clip.isRunning();

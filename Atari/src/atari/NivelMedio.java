@@ -41,6 +41,9 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		setFocusable(true);
 		requestFocus();
 		initGame();
+		
+		AudioPlayer.detenerAudio();
+	    AudioPlayer.reproducirAudio("Resources/facil.wav");
 	}
 	
 	// Resetea estado para reiniciar el nivel medio
@@ -95,40 +98,41 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 	}
 
 	private void update() {
-		boolean w = ball.isWaiting();
-		if (leftPressed)
-			paddle.moveLeft();
-		if (rightPressed)
-			paddle.moveRight();
-		if (!w) {
-//			if (leftPressed)
-//				paddle.moveLeft();
-//			if (rightPressed)
-//				paddle.moveRight();
-			ball.update();
-			ball.checkWallCollision();
-			ball.checkPaddleCollision(paddle);
-			
-			int puntos = bricks.checkBallCollision(ball); //durabilidad bloques
-			score += puntos;
+	    boolean w = ball.isWaiting();
+	    if (leftPressed)
+	        paddle.moveLeft();
+	    if (rightPressed)
+	        paddle.moveRight();
+	    if (!w) {
+	        ball.update();
+	        ball.checkWallCollision();
+	        ball.checkPaddleCollision(paddle);
 
-			if (bricks.isEmpty()) {
-				running = false;
-				winMenu2();
-			}
-		} else {
-			ball.update();
-		}
-		if (!w && ball.isWaiting()) {
-			lives--;
-			if (lives <= 0) {
-				running = false;
-				showGameOverMenu2();
-			} else {
-				ball.resetPosition(paddle.getX() + paddle.getWidth() / 2, paddle.getY() - ball.getDiameter());
-			}
-		}
+	        int puntos = bricks.checkBallCollision(ball); //durabilidad bloques
+	        score += puntos;
+
+	        if (puntos > 0) {
+	            AudioPlayer.reproducirEfecto("Resources/bloque.wav");
+	        }
+
+	        if (bricks.isEmpty()) {
+	            running = false;
+	            winMenu2();
+	        }
+	    } else {
+	        ball.update();
+	    }
+	    if (!w && ball.isWaiting()) {
+	        lives--;
+	        if (lives <= 0) {
+	            running = false;
+	            showGameOverMenu2();
+	        } else {
+	            ball.resetPosition(paddle.getX() + paddle.getWidth() / 2, paddle.getY() - ball.getDiameter());
+	        }
+	    }
 	}
+
 
 	//Perder
 	private void showGameOverMenu2() {
@@ -168,6 +172,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		int w = 500, h = 300;
 		menu.setSize(w, h);
 		menu.setLayout(null);
+		menu.setUndecorated(true);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		menu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
 
@@ -255,6 +260,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		int w = 500, h = 300;
 		winMenu.setSize(w, h);
 		winMenu.setLayout(null);
+		winMenu.setUndecorated(true);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		winMenu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
 

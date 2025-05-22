@@ -55,7 +55,7 @@ public class BreakoutGame {
 	    // ejecuta nivel facil
 	    public static void launchGame() {
 	        gameWindow = new Frame("Atari Breakout");
-	        
+	  
 	        // Pantalla completa para juego
 	        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 	        int sw = screenSize.width;
@@ -83,7 +83,7 @@ public class BreakoutGame {
 	    }
 	    
 	    //ejecuta nivel medio
-	    public static void launchMediumLevel() {
+	    public static void launchMediumLevel() {	    	
 	        if (gameWindow != null) gameWindow.dispose(); // Si hay una ventana anterior, se cierra
 
 	        gameWindow = new Frame("Atari Breakout – Nivel Medio");
@@ -113,6 +113,7 @@ public class BreakoutGame {
 	    
 	    //ejecuta nivel dificil
 	    public static void launchDificilLevel() {
+
 	        if (gameWindow != null) gameWindow.dispose(); 
 	        gameWindow = new Frame("Atari Breakout – Nivel Dificil");
 	        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -141,6 +142,7 @@ public class BreakoutGame {
 
 	    //ejecuta nivel extra
 	    public static void launchExtraLevel() {
+
 	        if (gameWindow != null) gameWindow.dispose(); 
 	        gameWindow = new Frame("Atari Breakout – Nivel Dificil");
 	        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
