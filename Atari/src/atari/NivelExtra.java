@@ -134,11 +134,15 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
         }
 
         boolean w = ball.isWaiting();
+        if (leftPressed)
+    		paddle.moveLeft();
+    	if (rightPressed)
+    		paddle.moveRight();
         if (!w) {
-            if (leftPressed)
-                paddle.moveLeft();
-            if (rightPressed)
-                paddle.moveRight();
+//            if (leftPressed)
+//                paddle.moveLeft();
+//            if (rightPressed)
+//                paddle.moveRight();
             ball.update();
             ball.checkWallCollision();
             ball.checkPaddleCollision(paddle);
