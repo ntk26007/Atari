@@ -5,6 +5,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -95,11 +96,15 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 
 	private void update() {
 		boolean w = ball.isWaiting();
+		if (leftPressed)
+			paddle.moveLeft();
+		if (rightPressed)
+			paddle.moveRight();
 		if (!w) {
-			if (leftPressed)
-				paddle.moveLeft();
-			if (rightPressed)
-				paddle.moveRight();
+//			if (leftPressed)
+//				paddle.moveLeft();
+//			if (rightPressed)
+//				paddle.moveRight();
 			ball.update();
 			ball.checkWallCollision();
 			ball.checkPaddleCollision(paddle);
@@ -128,33 +133,71 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 	//Perder
 	private void showGameOverMenu2() {
 		Frame menu = new Frame("Game Over") {
-			private Image background = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
+			private Image background = Toolkit.getDefaultToolkit().getImage("resources/sombra2 (1).jpg");
 
 			{
 				Toolkit.getDefaultToolkit().prepareImage(background, -1, -1, null);
 			}
 
-			@Override
-			public void paint(Graphics g) {
-				g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
-				super.paint(g);
-			}
+			 Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
+				@Override
+				public void paint(Graphics g) {
+					g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+
+					// Dibuja el texto
+					Graphics2D g2d = (Graphics2D) g;
+					g2d.setColor(Color.RED); 
+					g2d.setFont(fuentePersonalizada); // Fuente del texto
+
+					String text = "GAME OVER";
+					FontMetrics fm = g2d.getFontMetrics();
+					int textWidth = fm.stringWidth(text);
+					int x = (getWidth() - textWidth) / 2;
+					int y = 100; // Ajusta según posición deseada sobre los botones
+
+					g2d.drawString(text, x, y);
+
+					super.paint(g);
+					
+				}
+			
 		};
 
+		Font fuentePersonalizada = FuentePersonalizada.cargarFuente(18f);
 		menu.setResizable(false);
-		int w = 400, h = 250;
+		int w = 500, h = 300;
 		menu.setSize(w, h);
 		menu.setLayout(null);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		menu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
 
-		Button retry = new Button("Reintentar");
-		retry.setBounds(60, 120, 120, 40);
-		menu.add(retry);
+		//colocar botones
+				int buttonWidth = 140;
+				int buttonHeight = 50;
+				int buttonY = 220;
+				int spacing = 40;
 
-		Button mainMenu = new Button("Menú");
-		mainMenu.setBounds(220, 120, 120, 40);
-		menu.add(mainMenu);
+
+				Button retry = new Button("Reintentar");
+				retry.setBackground(Color.GREEN);
+				retry.setBounds((w / 2) - buttonWidth - (spacing / 2), buttonY, buttonWidth, buttonHeight);
+				retry.setFont(fuentePersonalizada); // Fuente del texto
+				menu.add(retry);
+
+				Button mainMenu = new Button("Volver a menú");
+				mainMenu.setBackground(Color.cyan);
+				mainMenu.setBounds((w / 2) + (spacing / 2), buttonY, buttonWidth, buttonHeight);
+				mainMenu.setFont(fuentePersonalizada); // Fuente del texto
+				menu.add(mainMenu);
+//		Button retry = new Button("Reintentar");
+//		retry.setBackground(Color.GREEN);
+//		retry.setBounds(60, 120, 120, 40);
+//		menu.add(retry);
+//
+//		Button mainMenu = new Button("Menú");
+//		mainMenu.setBackground(Color.CYAN);
+//		mainMenu.setBounds(220, 120, 120, 40);
+//		menu.add(mainMenu);
 
 		//reintentar, esto es lo ultimo q me dijo el chat pero creo que debe ser solo con dos lineas
 		// osea esto = menu.dispose();
@@ -194,7 +237,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 	//Ganar
 	private void winMenu2() {
 		Frame winMenu = new Frame("\u00a1Nivel Completado!") {
-			private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
+			private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/sombra1 (1).jpg");
 			{
 				Toolkit.getDefaultToolkit().prepareImage(bgImage, -1, -1, null);
 			}
@@ -207,8 +250,9 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 			}
 		};
 
+		Font fuentePersonalizada = FuentePersonalizada.cargarFuente(18f);
 		winMenu.setResizable(false);
-		int w = 400, h = 300;
+		int w = 500, h = 300;
 		winMenu.setSize(w, h);
 		winMenu.setLayout(null);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -218,17 +262,23 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		int baseY = 80;
 
 		Button retryBtn = new Button("Reintentar");
+		retryBtn.setBackground(Color.GREEN);
 		retryBtn.setBounds(bx, baseY, bw, bh);
+		retryBtn.setFont(fuentePersonalizada); // Fuente del texto
 		winMenu.add(retryBtn);
 
 		Button nextBtn = new Button("Siguiente Nivel");
+		nextBtn.setBackground(Color.yellow);
 		nextBtn.setBounds(bx, baseY + 60, bw, bh);
+		nextBtn.setFont(fuentePersonalizada); // Fuente del texto
 		winMenu.add(nextBtn);
 
 		Button menuBtn = new Button("Menú");
+		menuBtn.setBackground(Color.cyan);
 		menuBtn.setBounds(bx, baseY + 120, bw, bh);
+		menuBtn.setFont(fuentePersonalizada); // Fuente del texto
 		winMenu.add(menuBtn);
-
+		
 		retryBtn.addActionListener(e -> {
 			winMenu.dispose();
 			BreakoutGame.restartNivelMedio();

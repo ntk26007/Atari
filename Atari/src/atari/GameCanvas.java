@@ -95,11 +95,15 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	// movimiento pala
 	private void update() {
 		boolean wasWaiting = ball.isWaiting();
+		if (leftPressed)
+			paddle.moveLeft();
+		if (rightPressed)
+			paddle.moveRight();
 		if (!ball.isWaiting()) {
-			if (leftPressed)
-				paddle.moveLeft();
-			if (rightPressed)
-				paddle.moveRight();
+//			if (leftPressed)
+//				paddle.moveLeft();
+//			if (rightPressed)
+//				paddle.moveRight();
 			ball.update();
 			ball.checkWallCollision();
 			ball.checkPaddleCollision(paddle);
@@ -161,6 +165,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 				Toolkit.getDefaultToolkit().prepareImage(background, -1, -1, null);
 			}
 
+			 Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 			@Override
 			public void paint(Graphics g) {
 				g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
@@ -168,7 +173,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 				// Dibuja el texto
 				Graphics2D g2d = (Graphics2D) g;
 				g2d.setColor(Color.RED); 
-				g2d.setFont(new Font("Verdana", Font.BOLD, 52)); // Fuente del texto
+				g2d.setFont(fuentePersonalizada); // Fuente del texto
 
 				String text = "GAME OVER";
 				FontMetrics fm = g2d.getFontMetrics();
@@ -179,10 +184,11 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 				g2d.drawString(text, x, y);
 
 				super.paint(g);
+				
 			}
 		};
 
-
+		Font fuentePersonalizada = FuentePersonalizada.cargarFuente(18f);
 		menu.setResizable(false);
 		int w = 500, h = 300;
 		menu.setSize(w, h);
@@ -199,14 +205,17 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 
 
 		Button retry = new Button("Reintentar");
-		//retry.setBackground(Color.CYAN);
+		retry.setBackground(Color.GREEN);
 		retry.setBounds((w / 2) - buttonWidth - (spacing / 2), buttonY, buttonWidth, buttonHeight);
+		retry.setFont(fuentePersonalizada); // Fuente del texto
 		menu.add(retry);
 
 		Button mainMenu = new Button("Volver a menú");
-		//mainMenu.setBackground(Color.CYAN);
+		mainMenu.setBackground(Color.cyan);
 		mainMenu.setBounds((w / 2) + (spacing / 2), buttonY, buttonWidth, buttonHeight);
+		mainMenu.setFont(fuentePersonalizada); // Fuente del texto
 		menu.add(mainMenu);
+	
 
 		// lleva al mismo nivel
 		retry.addActionListener(new ActionListener() {
@@ -257,7 +266,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	// cuando se rompen todos los blques
 	private void winMenu() {
 		Frame winMenu = new Frame("¡Nivel Completado!") {
-			private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
+			private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/sombra1 (1).jpg");
 
 			{
 				Toolkit.getDefaultToolkit().prepareImage(bgImage, -1, -1, null);
@@ -271,8 +280,9 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 			}
 		};
 
+		Font fuentePersonalizada = FuentePersonalizada.cargarFuente(18f);
 		winMenu.setResizable(false);
-		int w = 400, h = 300;
+		int w = 500, h = 300;
 		winMenu.setSize(w, h);
 		winMenu.setLayout(null);
 		winMenu.setUndecorated(true);
@@ -283,15 +293,21 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		int baseY = 80;
 
 		Button retryBtn = new Button("Reintentar");
+		retryBtn.setBackground(Color.GREEN);
 		retryBtn.setBounds(bx, baseY, bw, bh);
+		retryBtn.setFont(fuentePersonalizada); // Fuente del texto
 		winMenu.add(retryBtn);
 
 		Button nextBtn = new Button("Siguiente Nivel");
+		nextBtn.setBackground(Color.yellow);
 		nextBtn.setBounds(bx, baseY + 60, bw, bh);
+		nextBtn.setFont(fuentePersonalizada); // Fuente del texto
 		winMenu.add(nextBtn);
 
 		Button menuBtn = new Button("Menú");
+		menuBtn.setBackground(Color.cyan);
 		menuBtn.setBounds(bx, baseY + 120, bw, bh);
+		menuBtn.setFont(fuentePersonalizada); // Fuente del texto
 		winMenu.add(menuBtn);
 
 		// acciones de los botones

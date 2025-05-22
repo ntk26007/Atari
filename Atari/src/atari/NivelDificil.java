@@ -111,11 +111,15 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		}
 
 		boolean w = ball.isWaiting();
+		if (leftPressed)
+			paddle.moveLeft();
+		if (rightPressed)
+			paddle.moveRight();
 		if (!w) {
-			if (leftPressed)
-				paddle.moveLeft();
-			if (rightPressed)
-				paddle.moveRight();
+//			if (leftPressed)
+//				paddle.moveLeft();
+//			if (rightPressed)
+//				paddle.moveRight();
 			ball.update();
 			ball.checkWallCollision();
 			ball.checkPaddleCollision(paddle);
@@ -193,15 +197,17 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 	//Perder
 	private void showGameOverMenu3() {
 		Frame menu = new Frame("Game Over") {
-			private Image background = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
+			private Image background = Toolkit.getDefaultToolkit().getImage("resources/sombra1 (1).jpg");
 
 			{
 				Toolkit.getDefaultToolkit().prepareImage(background, -1, -1, null);
 			}
 
+			Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 			@Override
 			public void paint(Graphics g) {
 				g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+				g.setFont(fuentePersonalizada); // Fuente del texto
 				super.paint(g);
 			}
 		};
@@ -213,14 +219,16 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		menu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
 
+
 		Button retry = new Button("Reintentar");
+		retry.setBackground(Color.GREEN);
 		retry.setBounds(60, 120, 120, 40);
 		menu.add(retry);
 
 		Button mainMenu = new Button("Menú");
+		mainMenu.setBackground(Color.CYAN);
 		mainMenu.setBounds(220, 120, 120, 40);
 		menu.add(mainMenu);
-
 		
 		retry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -257,7 +265,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 	//Ganar
 	private void winMenu3() {
 		Frame winMenu = new Frame("\u00a1Nivel Completado!") {
-			private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
+			private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/sombra1 (1).jpg");
 			{
 				Toolkit.getDefaultToolkit().prepareImage(bgImage, -1, -1, null);
 			}
@@ -270,8 +278,9 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 			}
 		};
 
+		Font fuentePersonalizada = FuentePersonalizada.cargarFuente(18f);
 		winMenu.setResizable(false);
-		int w = 400, h = 300;
+		int w = 500, h = 300;
 		winMenu.setSize(w, h);
 		winMenu.setLayout(null);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -281,15 +290,21 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		int baseY = 80;
 
 		Button retryBtn = new Button("Reintentar");
+		retryBtn.setBackground(Color.GREEN);
 		retryBtn.setBounds(bx, baseY, bw, bh);
+		retryBtn.setFont(fuentePersonalizada); // Fuente del texto
 		winMenu.add(retryBtn);
 		
 		Button nextBtn = new Button("Nivel Extra");
+		nextBtn.setBackground(Color.YELLOW);
 		nextBtn.setBounds(bx, baseY + 60, bw, bh);
+		nextBtn.setFont(fuentePersonalizada); // Fuente del texto
 		winMenu.add(nextBtn);
 
 		Button menuBtn = new Button("Menú");
+		menuBtn.setBackground(Color.CYAN);
 		menuBtn.setBounds(bx, baseY + 120, bw, bh);
+		menuBtn.setFont(fuentePersonalizada); // Fuente del texto
 		winMenu.add(menuBtn);
 
 		retryBtn.addActionListener(e -> {

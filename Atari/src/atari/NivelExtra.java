@@ -260,15 +260,17 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
     // Perder por vidas
     private void showGameOverMenu4() {
         Frame menu = new Frame("Game Over") {
-            private Image background = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
+            private Image background = Toolkit.getDefaultToolkit().getImage("resources/sombra1 (1).jpg");
 
             {
                 Toolkit.getDefaultToolkit().prepareImage(background, -1, -1, null);
             }
 
+            Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
             @Override
             public void paint(Graphics g) {
                 g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+                g.setFont(fuentePersonalizada); // Fuente del texto
                 super.paint(g);
             }
         };
@@ -280,13 +282,15 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         menu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
 
-        Button retry = new Button("Reintentar");
-        retry.setBounds(60, 120, 120, 40);
-        menu.add(retry);
+		Button retry = new Button("Reintentar");
+		retry.setBackground(Color.GREEN);
+		retry.setBounds(60, 120, 120, 40);
+		menu.add(retry);
 
-        Button mainMenu = new Button("Menú");
-        mainMenu.setBounds(220, 120, 120, 40);
-        menu.add(mainMenu);
+		Button mainMenu = new Button("Menú");
+		mainMenu.setBackground(Color.CYAN);
+		mainMenu.setBounds(220, 120, 120, 40);
+		menu.add(mainMenu);
 
         retry.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -342,7 +346,7 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
     // Ganar
     private void winMenu4() {
         Frame winMenu = new Frame("¡Nivel Completado!") {
-            private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
+            private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/sombra1 (1).jpg");
             private Image staticImage; // Objeto Image de AWT para la foto estática
 
             {
@@ -398,8 +402,9 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
             }
         };
 
+        Font fuentePersonalizada = FuentePersonalizada.cargarFuente(18f);
         winMenu.setResizable(false);
-        int w = 400, h = 450;
+        int w = 500, h = 450;
         winMenu.setSize(w, h);
         winMenu.setLayout(null); // Usa null layout para posicionamiento absoluto
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -411,7 +416,9 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
         int baseY = h - bh - paddingFromBottom;
 
         Button menuBtn = new Button("Volver al menú");
+        menuBtn.setBackground(Color.red);
         menuBtn.setBounds(bx, baseY, bw, bh);
+        menuBtn.setFont(fuentePersonalizada); // Fuente del texto
         winMenu.add(menuBtn);
 
         menuBtn.addActionListener(e -> {
