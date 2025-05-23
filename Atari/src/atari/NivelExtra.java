@@ -129,6 +129,7 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
     }
 
     private void update() {
+    	if (paused) return; // Si está en pausa, no actualiza
         long elapsed = System.currentTimeMillis() - startTime;
         if (elapsed >= TIME_LIMIT) {
             running = false;

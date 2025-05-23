@@ -31,7 +31,8 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	private boolean leftPressed, rightPressed;
 	private int lives;
 	private int score;
-
+	private boolean paused = false;
+	
 	public GameCanvas(int width, int height) {
 		//AudioPlayer.cargarEfecto("bloque", "Resources/bloque.wav");
 		this.width = width;
@@ -48,9 +49,13 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 
 	// Resetea estado para reiniciar partida
 	public void resetGame() {
-		initGame();
-		running = true;
-	}
+        initGame();
+        running = true;
+        leftPressed = false;
+        rightPressed = false;
+        paused = false;
+        requestFocus();
+    }
 
 	private void initGame() {
 		// Centro pala y pelota
@@ -100,17 +105,13 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 
 	// movimiento pala
 	private void update() {
-
+		 if (paused) return; // Si está en pausa, no actualiza
 		boolean wasWaiting = ball.isWaiting();
 		if (leftPressed)
 			paddle.moveLeft();
 		if (rightPressed)
 			paddle.moveRight();
 		if (!ball.isWaiting()) {
-//			if (leftPressed)
-//				paddle.moveLeft();
-//			if (rightPressed)
-//				paddle.moveRight();
 			ball.update();
 			ball.checkWallCollision();
 			ball.checkPaddleCollision(paddle);
@@ -162,6 +163,21 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		ball.draw(g2);
 		bricks.draw(g2);
 
+		// Mostrar mensaje de pausa si está pausado
+	    if (paused) {
+	    	Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
+	        g2.setFont(fuentePersonalizada);
+	        String texto = "PAUSA";
+	        int x = (width - g2.getFontMetrics().stringWidth(texto)) / 2;
+	        int y = height / 2;
+
+	        // Sombra para visibilidad
+	        g2.setColor(Color.BLACK);
+	        g2.drawString(texto, x + 2, y + 2);
+	        g2.setColor(Color.RED);
+	        g2.drawString(texto, x, y);
+	    }
+	    
 		g2.dispose();
 		bs.show();
 	}
@@ -276,6 +292,8 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 			leftPressed = false;
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
 			rightPressed = false;
+		if (e.getKeyCode() == KeyEvent.VK_P) 
+			paused = !paused;
 	}
 
 	@Override

@@ -36,7 +36,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 	private Thread gameThread;
 	private long startTime;
 	private final int TIME_LIMIT = 300_000; // 300,000 ms = 5 minutos
-
+	private boolean paused = false;
 
 
 	public NivelDificil(int width, int height) {
@@ -54,6 +54,8 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 	
 	// Resetea estado para reiniciar el nivel medio
 		public void resetGame() {
+			leftPressed = false;  // Evita movimiento automático hacia la izquierda
+			rightPressed = false; // Evita movimiento automático hacia la derecha
 			initGame();
 			running = true;
 		}
@@ -107,6 +109,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 	}
 
 	private void update() {
+		if (paused) return; // Si está en pausa, no actualiza
 		long elapsed = System.currentTimeMillis() - startTime;
 		if (elapsed >= TIME_LIMIT) {
 		    running = false;
@@ -156,17 +159,34 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 	//cuando se acaba el tiempo salta otra ventana
 	private void showOverTime() {
 	    Frame timeOver = new Frame("¡Tiempo agotado!") {
-	        private Image background = Toolkit.getDefaultToolkit().getImage("resources/1.jpg");
+	        private Image background = Toolkit.getDefaultToolkit().getImage("resources/sombra2 (1).jpg");
 
 	        {
 	            Toolkit.getDefaultToolkit().prepareImage(background, -1, -1, null);
 	        }
 
-	        @Override
-	        public void paint(Graphics g) {
-	            g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
-	            super.paint(g);
-	        }
+
+Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
+				@Override
+				public void paint(Graphics g) {
+					g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+
+					// Dibuja el texto
+					Graphics2D g2d = (Graphics2D) g;
+					g2d.setColor(Color.RED); 
+					g2d.setFont(fuentePersonalizada); // Fuente del texto
+
+					String text = "GAME OVER";
+					FontMetrics fm = g2d.getFontMetrics();
+					int textWidth = fm.stringWidth(text);
+					int x = (getWidth() - textWidth) / 2;
+					int y = 100; // Ajusta según posición deseada sobre los botones
+
+					g2d.drawString(text, x, y);
+
+					super.paint(g);
+					
+				}
 	    };
 
 	    timeOver.setSize(400, 250);
@@ -404,11 +424,24 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		long remainingTime = Math.max(0, TIME_LIMIT - (System.currentTimeMillis() - startTime));
 		long seconds = remainingTime / 1000;
 		g.drawString("Tiempo: " + seconds + "s", width / 2 - 40, 24);
-
 		
 		paddle.draw(g);
 		ball.draw(g);
 		bricks.draw(g);
+		// Mostrar mensaje de pausa si está pausado
+	    if (paused) {
+	    	Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
+	        g.setFont(fuentePersonalizada);
+	        String texto = "PAUSA";
+	        int x = (width - g.getFontMetrics().stringWidth(texto)) / 2;
+	        int y = height / 2;
+
+	        // Sombra para visibilidad
+	        g.setColor(Color.BLACK);
+	        g.drawString(texto, x + 2, y + 2);
+	        g.setColor(Color.RED);
+	        g.drawString(texto, x, y);
+	    }
 		g.dispose();
 		bs.show();
 	}
@@ -418,6 +451,8 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 			leftPressed = true;
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
 			rightPressed = true;
+		if (e.getKeyCode() == KeyEvent.VK_P)
+	        paused = !paused; // Alterna pausa/reanudar
 		//if (e.getKeyCode() == KeyEvent.VK_P) running = !running; // pausa pero al volver a pulsar no se quita la pausa
 	}
 

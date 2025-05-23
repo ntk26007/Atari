@@ -31,6 +31,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 	private int score = 0;
 	private boolean running = false;
 	private Thread gameThread;
+	private boolean paused = false;
 
 
 	public NivelMedio(int width, int height) {
@@ -48,6 +49,8 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 	
 	// Resetea estado para reiniciar el nivel medio
 		public void resetGame() {
+			leftPressed = false;  // Evita movimiento automático hacia la izquierda
+			rightPressed = false; // Evita movimiento automático hacia la derecha
 			initGame();
 			running = true;
 		}
@@ -98,6 +101,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 	}
 
 	private void update() {
+		if (paused) return; // Si está en pausa, no actualiza
 	    boolean w = ball.isWaiting();
 	    if (leftPressed)
 	        paddle.moveLeft();
@@ -330,6 +334,20 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		paddle.draw(g);
 		ball.draw(g);
 		bricks.draw(g);
+		// Mostrar mensaje de pausa si está pausado
+	    if (paused) {
+	    	Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
+	        g.setFont(fuentePersonalizada);
+	        String texto = "PAUSA";
+	        int x = (width - g.getFontMetrics().stringWidth(texto)) / 2;
+	        int y = height / 2;
+
+	        // Sombra para visibilidad
+	        g.setColor(Color.BLACK);
+	        g.drawString(texto, x + 2, y + 2);
+	        g.setColor(Color.RED);
+	        g.drawString(texto, x, y);
+	    }
 		g.dispose();
 		bs.show();
 	}
@@ -339,6 +357,8 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 			leftPressed = true;
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
 			rightPressed = true;
+		if (e.getKeyCode() == KeyEvent.VK_P)
+	        paused = !paused; // Alterna pausa/reanudar
 		//if (e.getKeyCode() == KeyEvent.VK_P) running = !running; // pausa pero al volver a pulsar no se quita la pausa
 	}
 
