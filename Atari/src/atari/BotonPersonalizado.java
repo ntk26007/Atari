@@ -12,6 +12,7 @@ public class BotonPersonalizado extends Canvas {
     private Color colorFondoHover;
     private Color colorTexto = Color.WHITE;
 
+
     public BotonPersonalizado(String texto, int ancho, int alto) {
         this.texto = texto;
         setSize(ancho, alto);
@@ -56,7 +57,6 @@ public class BotonPersonalizado extends Canvas {
         this.imagen = Toolkit.getDefaultToolkit().getImage(rutaImagen);
         repaint();
     }
-
 
     @Override
     public void paint(Graphics g) {

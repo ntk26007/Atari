@@ -43,7 +43,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		initGame();
 		
 		AudioPlayer.detenerAudio();
-	    AudioPlayer.reproducirAudio("Resources/facil.wav");
+	    AudioPlayer.reproducirAudio("Resources/medio.wav");
 	}
 	
 	// Resetea estado para reiniciar el nivel medio
@@ -194,19 +194,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 				mainMenu.setBounds((w / 2) + (spacing / 2), buttonY, buttonWidth, buttonHeight);
 				mainMenu.setFont(fuentePersonalizada); // Fuente del texto
 				menu.add(mainMenu);
-//		Button retry = new Button("Reintentar");
-//		retry.setBackground(Color.GREEN);
-//		retry.setBounds(60, 120, 120, 40);
-//		menu.add(retry);
-//
-//		Button mainMenu = new Button("Menú");
-//		mainMenu.setBackground(Color.CYAN);
-//		mainMenu.setBounds(220, 120, 120, 40);
-//		menu.add(mainMenu);
 
-		//reintentar, esto es lo ultimo q me dijo el chat pero creo que debe ser solo con dos lineas
-		// osea esto = menu.dispose();
-		//			   BreakoutGame.restartNivelMedio();
 		retry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetGame();
@@ -218,6 +206,8 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 				}
 
 				menu.dispose();
+				AudioPlayer.detenerAudio(); 
+		        AudioPlayer.reproducirAudio("Resources/facil.wav");
 				BreakoutGame.restartNivelMedio();
 			}
 		});
@@ -225,6 +215,8 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		mainMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				menu.dispose();
+				AudioPlayer.detenerAudio(); 
+		        AudioPlayer.reproducirAudio("Resources/menu.wav");
 				BreakoutGame.returnToMenu();
 			}
 		});
@@ -234,6 +226,9 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 				menu.dispose();
 			}
 		});
+		
+		AudioPlayer.detenerAudio();
+		AudioPlayer.reproducirAudioUnaVez("Resources/gameOver.wav");
 
 		menu.setVisible(true);
 	}
@@ -292,11 +287,15 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 
 		nextBtn.addActionListener(e -> {
 			winMenu.dispose();
+			AudioPlayer.detenerAudio(); 
+	        AudioPlayer.reproducirAudio("Resources/facil.wav");
 			BreakoutGame.launchDificilLevel();
 		});
 
 		menuBtn.addActionListener(e -> {
 			winMenu.dispose();
+			AudioPlayer.detenerAudio(); 
+		    AudioPlayer.reproducirAudio("Resources/menu.wav");
 			BreakoutGame.returnToMenu();
 		});
 
@@ -306,6 +305,9 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 			}
 		});
 
+		AudioPlayer.detenerAudio();
+	    AudioPlayer.reproducirAudioUnaVez("Resources/win.wav"); 
+		
 		winMenu.setResizable(false);
 		winMenu.setVisible(true);
 	}

@@ -16,6 +16,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
@@ -398,74 +400,6 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		// Coordenadas horizontales (centrado)
 		int leftX = (w - (canvasW + 60 + botonW)) / 2;  // separador más grande
 		
-//		// ------- Fila 1: Fácil -------
-//		Image imgFacil = Toolkit.getDefaultToolkit().getImage("resources/star1.png");
-//		Canvas previewFacil = new Canvas() {
-//			@Override
-//			public void paint(Graphics g) {
-//				int cw = getWidth(), ch = getHeight();
-//				g.setColor(Color.BLACK);
-//				g.fillRect(0, 0, cw, ch);
-//				g.drawImage(imgFacil, 0, 0, cw, ch, this);
-//			}
-//		};
-//		int y1 = h / 8;
-//		previewFacil.setBounds(leftX, y1, canvasW, canvasH);
-//		levelFrame.add(previewFacil);
-//
-//		BotonPersonalizado boton_facil = new BotonPersonalizado("resources/facil.png", botonW, botonH);
-//		boton_facil.setBounds(leftX + canvasW + 40, y1 + (canvasH - botonH) / 2, botonW, botonH);
-//		boton_facil.setAccion(() -> {
-//			levelFrame.dispose();
-//			BreakoutGame.launchGame();
-//		});
-//		levelFrame.add(boton_facil);
-//
-//		// ------- Fila 2: Intermedio -------
-//		Image imgMedio = Toolkit.getDefaultToolkit().getImage("resources/star2.png");
-//		Canvas previewMedio = new Canvas() {
-//			@Override
-//			public void paint(Graphics g) {
-//				int cw = getWidth(), ch = getHeight();
-//				g.setColor(Color.BLACK);
-//				g.fillRect(0, 0, cw, ch);
-//				g.drawImage(imgMedio, 0, 0, cw, ch, this);
-//			}
-//		};
-//		int y2 = y1 + canvasH + gapY;
-//		previewMedio.setBounds(leftX, y2, canvasW, canvasH);
-//		levelFrame.add(previewMedio);
-//
-//		BotonPersonalizado boton_medio = new BotonPersonalizado("resources/medio.png", botonW, botonH);
-//		boton_medio.setBounds(leftX + canvasW + 40, y2 + (canvasH - botonH) / 2, botonW, botonH);
-//		boton_medio.setAccion(() -> {
-//			levelFrame.dispose();
-//			BreakoutGame.launchMediumLevel();
-//		});
-//		levelFrame.add(boton_medio);
-//
-//		// ------- Fila 3: Difícil -------
-//		Image imgDificil = Toolkit.getDefaultToolkit().getImage("resources/star3.png");
-//		Canvas previewDificil = new Canvas() {
-//			@Override
-//			public void paint(Graphics g) {
-//				int cw = getWidth(), ch = getHeight();
-//				g.setColor(Color.BLACK);
-//				g.fillRect(0, 0, cw, ch);
-//				g.drawImage(imgDificil, 0, 0, cw, ch, this);
-//			}
-//		};
-//		int y3 = y2 + canvasH + gapY;
-//		previewDificil.setBounds(leftX, y3, canvasW, canvasH);
-//		levelFrame.add(previewDificil);
-//
-//		BotonPersonalizado boton_dificil = new BotonPersonalizado("resources/dificil.png", botonW, botonH);
-//		boton_dificil.setBounds(leftX + canvasW + 40, y3 + (canvasH - botonH) / 2, botonW, botonH);
-//		boton_dificil.setAccion(() -> {
-//			levelFrame.dispose();
-//			BreakoutGame.launchDificilLevel();
-//		});
-//		levelFrame.add(boton_dificil);
 
 		// Cargar la fuente personalizada
         Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
@@ -485,15 +419,15 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		previewFacil.setBounds(leftX, y1, canvasW, canvasH);
 		levelFrame.add(previewFacil);
 
-		BotonPersonalizado boton_facil = new BotonPersonalizado("Facil", botonW, botonH);
-		boton_facil.setColorFondo(Color.BLUE.darker());
-		boton_facil.setBounds(leftX + canvasW + 40, y1 + (canvasH - botonH) / 2, botonW, botonH);
-		boton_facil.setFont(fuentePersonalizada);
-		boton_facil.setAccion(() -> {
+		BotonPersonalizado botonFacil = new BotonPersonalizado("Facil", botonW, botonH);
+		botonFacil.setColorFondo(Color.BLUE.darker());
+		botonFacil.setBounds(leftX + canvasW + 40, y1 + (canvasH - botonH) / 2, botonW, botonH);
+		botonFacil.setFont(fuentePersonalizada);
+		botonFacil.setAccion(() -> {
 		    levelFrame.dispose();
 		    BreakoutGame.launchGame();
 		});
-		levelFrame.add(boton_facil);
+		levelFrame.add(botonFacil);
 
 		// ------- Fila 2: Intermedio -------
 		Image imgMedio = Toolkit.getDefaultToolkit().getImage("resources/star2.png");
@@ -510,15 +444,15 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		previewMedio.setBounds(leftX, y2, canvasW, canvasH);
 		levelFrame.add(previewMedio);
 
-		BotonPersonalizado boton_medio = new BotonPersonalizado("Intermedio", botonW, botonH);
-		boton_medio.setColorFondo(Color.YELLOW.darker());
-		boton_medio.setBounds(leftX + canvasW + 40, y2 + (canvasH - botonH) / 2, botonW, botonH);
-		boton_medio.setFont(fuentePersonalizada.deriveFont(35f)); 
-		boton_medio.setAccion(() -> {
+		BotonPersonalizado botonMedio = new BotonPersonalizado("Intermedio", botonW, botonH);
+		botonMedio.setColorFondo(Color.YELLOW.darker());
+		botonMedio.setBounds(leftX + canvasW + 40, y2 + (canvasH - botonH) / 2, botonW, botonH);
+		botonMedio.setFont(fuentePersonalizada.deriveFont(35f)); 
+		botonMedio.setAccion(() -> {
 		    levelFrame.dispose();
 		    BreakoutGame.launchMediumLevel();
 		});
-		levelFrame.add(boton_medio);
+		levelFrame.add(botonMedio);
 
 		// ------- Fila 3: Difícil -------
 		Image imgDificil = Toolkit.getDefaultToolkit().getImage("resources/star3.png");
@@ -535,37 +469,56 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		previewDificil.setBounds(leftX, y3, canvasW, canvasH);
 		levelFrame.add(previewDificil);
 
-		BotonPersonalizado boton_dificil = new BotonPersonalizado("Dificil", botonW, botonH);
-		boton_dificil.setColorFondo(Color.RED.darker());
-		boton_dificil.setBounds(leftX + canvasW + 40, y3 + (canvasH - botonH) / 2, botonW, botonH);
-		boton_dificil.setFont(fuentePersonalizada);
-		boton_dificil.setAccion(() -> {
+		BotonPersonalizado botonDificil = new BotonPersonalizado("Dificil", botonW, botonH);
+		botonDificil.setColorFondo(Color.RED.darker());
+		botonDificil.setBounds(leftX + canvasW + 40, y3 + (canvasH - botonH) / 2, botonW, botonH);
+		botonDificil.setFont(fuentePersonalizada);
+		botonDificil.setAccion(() -> {
 		    levelFrame.dispose();
 		    BreakoutGame.launchDificilLevel(); 
 		});
-		levelFrame.add(boton_dificil);
+		levelFrame.add(botonDificil);
 		
 		// ------- Botón Volver -------
 		int volverW = w / 20;
 		int volverH = h / 20;
 
 		// Creas el botón con un texto (puede ser vacío si solo quieres imagen)
-		BotonPersonalizado boton_volver = new BotonPersonalizado("", volverW, volverH);
-
-		// Le asignas la imagen que quieres mostrar
-		boton_volver.setImagen("resources/volver.png");
-
+		BotonVolver botonVolver = new BotonVolver("Volver");
+		
 		// Ajustas la posición y tamaño del botón
-		boton_volver.setBounds(w - volverW - 40, 40, volverW, volverH);
+		botonVolver.setBounds(w - volverW - 40, 40, volverW, volverH);
 
 		// Acción del botón
-		boton_volver.setAccion(() -> {
+		botonVolver.setAccion(() -> {
 		    levelFrame.dispose();
 		});
+		
+		//BotonVolver.agregarEfectoSonido(botonVolver); no es necesario ya que implementamos una clase en concreto 
+		agregarEfectoSonido(botonDificil);
+		agregarEfectoSonido(botonMedio);
+		agregarEfectoSonido(botonFacil);
 
-		levelFrame.add(boton_volver);
+		levelFrame.add(botonVolver);
+		botonVolver.repaint(); 
 		levelFrame.setVisible(true);
 
 
 	}
+	
+	
+	 //efecto de sonido al pulsar y pasar el raton
+    private static void agregarEfectoSonido(BotonPersonalizado boton) {
+        boton.addMouseListener(new MouseAdapter() { 
+            @Override
+            public void mouseEntered(MouseEvent e) { //pasar el ratón
+                AudioPlayer.reproducirEfecto("Resources/hover.wav");
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                AudioPlayer.reproducirEfecto("Resources/click.wav");
+            }
+        });
+    }
 }

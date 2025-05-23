@@ -245,6 +245,9 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
                 }
                 gameThread = null; // Limpia la referencia al hilo
             }
+            
+            AudioPlayer.detenerAudio(); 
+	        AudioPlayer.reproducirAudio("Resources/menu.wav");
             BreakoutGame.returnToMenu();
         });
 
@@ -265,6 +268,9 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
                 BreakoutGame.returnToMenu();
             }
         });
+        
+        AudioPlayer.detenerAudio();
+		AudioPlayer.reproducirAudioUnaVez("Resources/gameOver.wav");
 
         timeOver.setVisible(true);
     }
@@ -315,9 +321,6 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
                     gameThread = new Thread(NivelExtra.this);
                     gameThread.start();
                 }
-                // Si launchDificilLevel() es para iniciar un nuevo juego, no debería llamarse aquí
-                // si resetGame() ya reinicia el nivel actual.
-                // BreakoutGame.launchDificilLevel(); // Considera si esto es necesario o si resetGame() es suficiente
             }
         });
 
@@ -333,6 +336,9 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
                     }
                     gameThread = null;
                 }
+                
+                AudioPlayer.detenerAudio(); 
+    	        AudioPlayer.reproducirAudio("Resources/menu.wav");
                 BreakoutGame.returnToMenu();
             }
         });
@@ -352,6 +358,9 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
                 BreakoutGame.returnToMenu();
             }
         });
+        
+        AudioPlayer.detenerAudio();
+		AudioPlayer.reproducirAudioUnaVez("Resources/gameOver.wav");
 
         menu.setVisible(true);
     }
@@ -446,6 +455,9 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
                 }
                 gameThread = null;
             }
+            
+            AudioPlayer.detenerAudio(); 
+	        AudioPlayer.reproducirAudio("Resources/menu.wav");
             BreakoutGame.returnToMenu();
         });
 
@@ -465,6 +477,8 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
             }
         });
 
+    	AudioPlayer.detenerAudio();
+	    AudioPlayer.reproducirAudioUnaVez("Resources/finalWin.wav");
         winMenu.setVisible(true);
     }
     

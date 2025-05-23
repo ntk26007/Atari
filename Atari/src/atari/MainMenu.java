@@ -46,6 +46,11 @@ public class MainMenu extends Frame {
         btnExit.setColorFondo(new Color(244, 67, 54));         // Rojo
         btnExit.setColorTexto(Color.WHITE);
         add(btnExit);
+        
+        agregarEfectoSonido(btnPlay);
+        agregarEfectoSonido(btnLevel);
+        agregarEfectoSonido(btnExit);
+
 
         // Eventos de botones
         btnPlay.setAccion(() -> {
@@ -73,6 +78,22 @@ public class MainMenu extends Frame {
 
         setVisible(true);
     }
+    
+    //efecto de sonido al pulsar y pasar el raton
+    private void agregarEfectoSonido(BotonPersonalizado boton) {
+        boton.addMouseListener(new MouseAdapter() { 
+            @Override
+            public void mouseEntered(MouseEvent e) { //pasar el ratón
+                AudioPlayer.reproducirEfecto("Resources/hover.wav");
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                AudioPlayer.reproducirEfecto("Resources/click.wav");
+            }
+        });
+    }
+
 
     @Override
     public void paint(Graphics g) {
@@ -86,87 +107,3 @@ public class MainMenu extends Frame {
     }
 }
 
-//package atari;
-//
-//import java.awt.*;
-//import java.awt.event.*;
-//
-//public class MainMenu extends Frame {
-//    private Image bgImage;
-//
-//    public MainMenu() {
-//        super("Menú Principal");
-//
-//        // Cargar imagen de fondo
-//        bgImage = Toolkit.getDefaultToolkit().getImage("resources/2.jpg");
-//
-//        // Pantalla completa
-//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//        int sw = screenSize.width, sh = screenSize.height;
-//        setLayout(null);
-//        setSize(sw, sh);
-//        setResizable(false);
-//        setUndecorated(true);
-//        
-//
-//        // Tamaños de botones
-//        int bw = sw / 4;
-//        int bh = sh / 12;
-//        int bx = (sw - bw) / 2;
-//
-//        Font fuentePersonalizada = FuentePersonalizada.cargarFuente(24f);
-//        
-//        // Botón "Jugar"
-//        Button btnPlay = new Button("JUGAR");
-//        btnPlay.setBounds(bx, sh / 2 - bh * 2, bw, bh);
-//        btnPlay.setFont(fuentePersonalizada);
-//        add(btnPlay);
-//
-//        // Botón "Niveles"
-//        Button btnLevel = new Button("NIVELES");
-//        btnLevel.setBounds(bx, sh / 2, bw, bh);
-//        btnLevel.setFont(fuentePersonalizada);
-//        add(btnLevel);
-//
-//        // Botón "Salir"
-//        Button btnExit = new Button("SALIR");
-//        btnExit.setBounds(bx, sh / 2 + bh * 2, bw, bh);
-//        btnExit.setFont(fuentePersonalizada);
-//        add(btnExit);
-//
-//        // Eventos de botones
-//        btnPlay.addActionListener(e -> {
-//            dispose();
-//            BreakoutGame.launchGame();
-//        });
-//
-//        btnLevel.addActionListener(e -> {
-//            GameCanvas.showLevelSelectionMenu();
-//        });
-//
-//        btnExit.addActionListener(e -> {
-//            System.exit(0);
-//        });
-//
-//        // Cerrar ventana
-//        addWindowListener(new WindowAdapter() {
-//            public void windowClosing(WindowEvent e) {
-//                System.exit(0);
-//            }
-//        });
-//
-//        setResizable(false);
-//        setVisible(true);
-//    }
-//
-//    @Override
-//    public void paint(Graphics g) {
-//        if (bgImage != null) {
-//            g.drawImage(bgImage, 0, 0, getWidth(), getHeight(), this);
-//        }
-//    }
-//
-//    public static void main(String[] args) {
-//        new MainMenu();
-//    }
-//}

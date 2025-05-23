@@ -5,6 +5,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -48,7 +49,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		initGame();
 		
 		AudioPlayer.detenerAudio();
-	    AudioPlayer.reproducirAudio("Resources/facil.wav");
+	    AudioPlayer.reproducirAudio("Resources/dificil.wav");
 	}
 	
 	// Resetea estado para reiniciar el nivel medio
@@ -194,8 +195,13 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 
 	    mainMenu.addActionListener(e -> {
 	        timeOver.dispose();
+	    	AudioPlayer.detenerAudio(); 
+	        AudioPlayer.reproducirAudio("Resources/menu.wav");
 	        BreakoutGame.returnToMenu();
 	    });
+	    
+	    AudioPlayer.detenerAudio();
+		AudioPlayer.reproducirAudioUnaVez("Resources/gameOver.wav");
 
 	    timeOver.setVisible(true);
 	}
@@ -205,7 +211,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 	//Perder
 	private void showGameOverMenu3() {
 		Frame menu = new Frame("Game Over") {
-			private Image background = Toolkit.getDefaultToolkit().getImage("resources/sombra1 (1).jpg");
+			private Image background = Toolkit.getDefaultToolkit().getImage("resources/sombra2 (1).jpg");
 
 			{
 				Toolkit.getDefaultToolkit().prepareImage(background, -1, -1, null);
@@ -215,28 +221,51 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 			@Override
 			public void paint(Graphics g) {
 				g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
-				g.setFont(fuentePersonalizada); // Fuente del texto
-				super.paint(g);
-			}
-		};
 
+				// Dibuja el texto
+				Graphics2D g2d = (Graphics2D) g;
+				g2d.setColor(Color.RED); 
+				g2d.setFont(fuentePersonalizada); // Fuente del texto
+
+				String text = "GAME OVER";
+				FontMetrics fm = g2d.getFontMetrics();
+				int textWidth = fm.stringWidth(text);
+				int x = (getWidth() - textWidth) / 2;
+				int y = 100; // Ajusta según posición deseada sobre los botones
+
+				g2d.drawString(text, x, y);
+
+				super.paint(g);
+				
+			}
+		
+	};
+
+	    Font fuentePersonalizada = FuentePersonalizada.cargarFuente(18f);
 		menu.setResizable(false);
-		int w = 400, h = 250;
+		int w = 500, h = 300;
 		menu.setSize(w, h);
 		menu.setLayout(null);
 		menu.setUndecorated(true);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		menu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
 
+		//colocar botones
+		int buttonWidth = 140;
+		int buttonHeight = 50;
+		int buttonY = 220;
+		int spacing = 40;
 
 		Button retry = new Button("Reintentar");
 		retry.setBackground(Color.GREEN);
-		retry.setBounds(60, 120, 120, 40);
+		retry.setBounds((w / 2) - buttonWidth - (spacing / 2), buttonY, buttonWidth, buttonHeight);
+		retry.setFont(fuentePersonalizada);
 		menu.add(retry);
 
 		Button mainMenu = new Button("Menú");
 		mainMenu.setBackground(Color.CYAN);
-		mainMenu.setBounds(220, 120, 120, 40);
+		mainMenu.setBounds((w / 2) + (spacing / 2), buttonY, buttonWidth, buttonHeight);
+		mainMenu.setFont(fuentePersonalizada);
 		menu.add(mainMenu);
 		
 		retry.addActionListener(new ActionListener() {
@@ -249,14 +278,17 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 				    gameThread.start();
 				}
 
+				AudioPlayer.detenerAudio(); 
+		        AudioPlayer.reproducirAudio("Resources/facil.wav");
 				menu.dispose();
-				//BreakoutGame.restartNivelDificil();
 			}
 		});
 
 		mainMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				menu.dispose();
+				AudioPlayer.detenerAudio(); 
+		        AudioPlayer.reproducirAudio("Resources/menu.wav");
 				BreakoutGame.returnToMenu();
 			}
 		});
@@ -267,6 +299,9 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 			}
 		});
 
+		AudioPlayer.detenerAudio();
+		AudioPlayer.reproducirAudioUnaVez("Resources/gameOver.wav");
+		
 		menu.setVisible(true);
 	}
 
@@ -324,11 +359,15 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		
 		nextBtn.addActionListener(e -> {
 			winMenu.dispose();
+			AudioPlayer.detenerAudio(); 
+	        AudioPlayer.reproducirAudio("Resources/facil.wav");
 			BreakoutGame.launchExtraLevel();
 		});
 
 		menuBtn.addActionListener(e -> {
 			winMenu.dispose();
+			AudioPlayer.detenerAudio(); 
+		    AudioPlayer.reproducirAudio("Resources/menu.wav");
 			BreakoutGame.returnToMenu();
 		});
 
@@ -338,6 +377,9 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 			}
 		});
 
+		AudioPlayer.detenerAudio();
+	    AudioPlayer.reproducirAudioUnaVez("Resources/win.wav"); 
+		
 		winMenu.setResizable(false);
 		winMenu.setVisible(true);
 	}

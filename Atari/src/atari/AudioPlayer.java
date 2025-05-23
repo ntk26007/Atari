@@ -29,7 +29,7 @@ public class AudioPlayer {
 
 	private static Clip clip;
     private static FloatControl volumeControl;
-    private static final float VOLUMEN_PREDETERMINADO = -14.0f; // volumen bajo (en decibelios)
+    private static final float VOLUMEN_PREDETERMINADO = -12.0f; // volumen bajo (en decibelios)
     private static HashMap<String, Clip> efectos = new HashMap<>();
 
     public static void reproducirAudio(String ruta) {
@@ -62,8 +62,17 @@ public class AudioPlayer {
     public static void reproducirAudioUnaVez(String ruta) {
         detenerAudio();
         try {
-            Clip clip = AudioSystem.getClip();
+
             AudioInputStream ais = AudioSystem.getAudioInputStream(new File(ruta));
+            Clip efecto = AudioSystem.getClip();
+            efecto.open(ais);
+
+            // Reducir el volumen 
+            FloatControl volume = (FloatControl) efecto.getControl(FloatControl.Type.MASTER_GAIN);
+            volume.setValue(-7.0f); 
+            
+            efecto.start();
+            
             clip.open(ais);
             clip.start(); // No loop
             clip.addLineListener(new LineListener() {
@@ -86,6 +95,7 @@ public class AudioPlayer {
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             efectos.put(nombre, clip);
+            
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
@@ -100,7 +110,7 @@ public class AudioPlayer {
 
             // Reducir el volumen (valor en decibelios)
             FloatControl volume = (FloatControl) efecto.getControl(FloatControl.Type.MASTER_GAIN);
-            volume.setValue(-8.0f); // -10.0f para más bajo
+            volume.setValue(-6.0f); // -10.0f para más bajo
 
             efecto.start(); // Solo se reproduce una vez
 
