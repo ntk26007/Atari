@@ -49,7 +49,7 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
         initGame();
         
         AudioPlayer.detenerAudio();
-	    AudioPlayer.reproducirAudio("Resources/facil.wav");
+	    AudioPlayer.reproducirAudio("Resources/extra.wav");
     }
 
     // Resetea estado para reiniciar el nivel
@@ -233,6 +233,9 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
                 gameThread = new Thread(NivelExtra.this);
                 gameThread.start();
             }
+            
+            AudioPlayer.detenerAudio();
+            AudioPlayer.reproducirAudio("Resources/extra.wav");
         });
 
         mainMenu.addActionListener(e -> {
@@ -322,6 +325,9 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
                     gameThread = new Thread(NivelExtra.this);
                     gameThread.start();
                 }
+                
+                AudioPlayer.detenerAudio();
+                AudioPlayer.reproducirAudio("Resources/extra.wav");
             }
         });
 

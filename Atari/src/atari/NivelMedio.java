@@ -211,7 +211,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 
 				menu.dispose();
 				AudioPlayer.detenerAudio(); 
-		        AudioPlayer.reproducirAudio("Resources/facil.wav");
+		        AudioPlayer.reproducirAudio("Resources/medio.wav");
 				BreakoutGame.restartNivelMedio();
 			}
 		});
@@ -240,52 +240,66 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 	
 	//Ganar
 	private void winMenu2() {
-		Frame winMenu = new Frame("\u00a1Nivel Completado!") {
-			private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/sombra1 (1).jpg");
-			{
-				Toolkit.getDefaultToolkit().prepareImage(bgImage, -1, -1, null);
-			}
+		Frame winMenu = new Frame("¡Nivel Completado!") {
+	        private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/sombra1 (1).jpg");
 
-			@Override
-			public void paint(Graphics g) {
-				Dimension size = getSize();
-				g.drawImage(bgImage, 0, 0, size.width, size.height, this);
-				super.paint(g);
-			}
-		};
+	        {
+	            Toolkit.getDefaultToolkit().prepareImage(bgImage, -1, -1, null);
+	        }
 
-		Font fuentePersonalizada = FuentePersonalizada.cargarFuente(18f);
-		winMenu.setResizable(false);
-		int w = 500, h = 300;
-		winMenu.setSize(w, h);
-		winMenu.setLayout(null);
-		winMenu.setUndecorated(true);
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		winMenu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
+	        @Override
+	        public void paint(Graphics g) {
+	            Dimension size = getSize();
+	            g.drawImage(bgImage, 0, 0, size.width, size.height, this);
 
-		int bw = 200, bh = 40, bx = (w - bw) / 2;
-		int baseY = 80;
+	            // Texto en la parte superior
+	            String titulo = "Nivel Completado!";
+	            g.setColor(Color.WHITE);
+	            Font fuenteTitulo = FuentePersonalizada.cargarFuente(28f); // Tamaño proporcional
+	            g.setFont(fuenteTitulo);
+	            FontMetrics fm = g.getFontMetrics();
+	            int x = (size.width - fm.stringWidth(titulo)) / 2;
+	            int y = fm.getAscent() + 30; // margen desde arriba
+	            g.drawString(titulo, x, y);
 
-		Button retryBtn = new Button("Reintentar");
-		retryBtn.setBackground(Color.GREEN);
-		retryBtn.setBounds(bx, baseY, bw, bh);
-		retryBtn.setFont(fuentePersonalizada); // Fuente del texto
-		winMenu.add(retryBtn);
+	            super.paint(g);
+	        }
+	    };
 
-		Button nextBtn = new Button("Siguiente Nivel");
-		nextBtn.setBackground(Color.yellow);
-		nextBtn.setBounds(bx, baseY + 60, bw, bh);
-		nextBtn.setFont(fuentePersonalizada); // Fuente del texto
-		winMenu.add(nextBtn);
+	    Font fuentePersonalizada = FuentePersonalizada.cargarFuente(18f);
+	    winMenu.setResizable(false);
+	    int w = 500, h = 300;
+	    winMenu.setSize(w, h);
+	    winMenu.setLayout(null);
+	    winMenu.setUndecorated(true);
+	    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+	    winMenu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
 
-		Button menuBtn = new Button("Menú");
-		menuBtn.setBackground(Color.cyan);
-		menuBtn.setBounds(bx, baseY + 120, bw, bh);
-		menuBtn.setFont(fuentePersonalizada); // Fuente del texto
-		winMenu.add(menuBtn);
+	    int bw = 200, bh = 40, bx = (w - bw) / 2;
+	    int baseY = 100; // Se baja para dejar espacio al texto
+
+	    Button retryBtn = new Button("Reintentar");
+	    retryBtn.setBackground(Color.GREEN);
+	    retryBtn.setBounds(bx, baseY, bw, bh);
+	    retryBtn.setFont(fuentePersonalizada);
+	    winMenu.add(retryBtn);
+
+	    Button nextBtn = new Button("Siguiente Nivel");
+	    nextBtn.setBackground(Color.YELLOW);
+	    nextBtn.setBounds(bx, baseY + 60, bw, bh);
+	    nextBtn.setFont(fuentePersonalizada);
+	    winMenu.add(nextBtn);
+
+	    Button menuBtn = new Button("Menú");
+	    menuBtn.setBackground(Color.CYAN);
+	    menuBtn.setBounds(bx, baseY + 120, bw, bh);
+	    menuBtn.setFont(fuentePersonalizada);
+	    winMenu.add(menuBtn);
+
 		
 		retryBtn.addActionListener(e -> {
 			winMenu.dispose();
+			AudioPlayer.reproducirAudio("Resources/medio.wav");
 			BreakoutGame.restartNivelMedio();
 		});
 

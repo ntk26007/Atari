@@ -9,7 +9,7 @@ public class MainMenu extends Frame {
     public MainMenu() {
         super("Menú Principal");
 
-        bgImage = Toolkit.getDefaultToolkit().getImage("resources/menu2.png");
+        bgImage = Toolkit.getDefaultToolkit().getImage("resources/mainMenu.png");
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int sw = screenSize.width, sh = screenSize.height;

@@ -38,7 +38,6 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 	private final int TIME_LIMIT = 300_000; // 300,000 ms = 5 minutos
 	private boolean paused = false;
 
-
 	public NivelDificil(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -47,26 +46,25 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		setFocusable(true);
 		requestFocus();
 		initGame();
-		
+
 		AudioPlayer.detenerAudio();
-	    AudioPlayer.reproducirAudio("Resources/dificil.wav");
+		AudioPlayer.reproducirAudio("Resources/dificil.wav");
 	}
-	
+
 	// Resetea estado para reiniciar el nivel medio
-		public void resetGame() {
-			leftPressed = false;  // Evita movimiento automático hacia la izquierda
-			rightPressed = false; // Evita movimiento automático hacia la derecha
-			initGame();
-			running = true;
-		}
+	public void resetGame() {
+		leftPressed = false; // Evita movimiento automático hacia la izquierda
+		rightPressed = false; // Evita movimiento automático hacia la derecha
+		initGame();
+		running = true;
+	}
 
 	private void initGame() {
-		//pala + pelota
-		paddle = new Paddle((width - 100) / 2, height - 50, 100, 10, width);
-		ball = new Ball(width / 2, height - 280, 10, 4, 4, width, height);
+		// pala + pelota
+		paddle = new Paddle((width - 100) / 2, height - 50, 500, 10, width);
+		ball = new Ball(width / 2, height - 280, 10, 8, 8, width, height);
 
-		
-		//bloques
+		// bloques
 		int rows = 12, cols = 12;
 		int spacing = 5;
 		int sideMargin = width / 20;
@@ -76,13 +74,13 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		int offsetX = sideMargin + spacing;
 		int offsetY = spacing * 9;
 		bricks = new DurabilityBrickManager(rows, cols, brickW, brickH, offsetX, offsetY);
-		
-		//puntuacion
+
+		// puntuacion
 		lives = 2;
 		score = 0;
 		lives = 2;
 		score = 0;
-		
+
 	}
 
 	@Override
@@ -90,7 +88,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		running = true;
 		long last = System.nanoTime();
 		double nsPerUpdate = 1e9 / 60.0, delta = 0;
-		startTime = System.currentTimeMillis(); //para el temporizador
+		startTime = System.currentTimeMillis(); // para el temporizador
 
 		while (running) {
 			long now = System.nanoTime();
@@ -109,12 +107,13 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 	}
 
 	private void update() {
-		if (paused) return; // Si está en pausa, no actualiza
+		if (paused)
+			return; // Si está en pausa, no actualiza
 		long elapsed = System.currentTimeMillis() - startTime;
 		if (elapsed >= TIME_LIMIT) {
-		    running = false;
-		    showOverTime(); //cuando se acaba el tiempo salta la pantalla de perder
-		    return;
+			running = false;
+			showOverTime(); // cuando se acaba el tiempo salta la pantalla de perder
+			return;
 		}
 
 		boolean w = ball.isWaiting();
@@ -130,13 +129,13 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 			ball.update();
 			ball.checkWallCollision();
 			ball.checkPaddleCollision(paddle);
-			
-			int puntos = bricks.checkBallCollision(ball); //durabilidad bloques
+
+			int puntos = bricks.checkBallCollision(ball); // durabilidad bloques
 			score += puntos;
-			
+
 			if (puntos > 0) {
-	            AudioPlayer.reproducirEfecto("Resources/bloque.wav");
-	        }
+				AudioPlayer.reproducirEfecto("Resources/bloque.wav");
+			}
 
 			if (bricks.isEmpty()) {
 				running = false;
@@ -155,82 +154,10 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 			}
 		}
 	}
-	
-	//cuando se acaba el tiempo salta otra ventana
+
+	// cuando se acaba el tiempo salta otra ventana
 	private void showOverTime() {
-	    Frame timeOver = new Frame("¡Tiempo agotado!") {
-	        private Image background = Toolkit.getDefaultToolkit().getImage("resources/sombra2 (1).jpg");
-
-	        {
-	            Toolkit.getDefaultToolkit().prepareImage(background, -1, -1, null);
-	        }
-
-
-Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
-				@Override
-				public void paint(Graphics g) {
-					g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
-
-					// Dibuja el texto
-					Graphics2D g2d = (Graphics2D) g;
-					g2d.setColor(Color.RED); 
-					g2d.setFont(fuentePersonalizada); // Fuente del texto
-
-					String text = "GAME OVER";
-					FontMetrics fm = g2d.getFontMetrics();
-					int textWidth = fm.stringWidth(text);
-					int x = (getWidth() - textWidth) / 2;
-					int y = 100; // Ajusta según posición deseada sobre los botones
-
-					g2d.drawString(text, x, y);
-
-					super.paint(g);
-					
-				}
-	    };
-
-	    timeOver.setSize(400, 250);
-	    timeOver.setLayout(null);
-		timeOver.setUndecorated(true);
-	    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-	    timeOver.setLocation((screen.width - 400) / 2, (screen.height - 250) / 2);
-
-	    Button retry = new Button("Reintentar");
-	    retry.setBounds(60, 120, 120, 40);
-	    timeOver.add(retry);
-
-	    Button mainMenu = new Button("Menú");
-	    mainMenu.setBounds(220, 120, 120, 40);
-	    timeOver.add(mainMenu);
-
-	    retry.addActionListener(e -> {
-	        resetGame();
-	        requestFocus();
-	        if (gameThread == null || !gameThread.isAlive()) {
-	            gameThread = new Thread(NivelDificil.this);
-	            gameThread.start();
-	        }
-	        timeOver.dispose();
-	    });
-
-	    mainMenu.addActionListener(e -> {
-	        timeOver.dispose();
-	    	AudioPlayer.detenerAudio(); 
-	        AudioPlayer.reproducirAudio("Resources/menu.wav");
-	        BreakoutGame.returnToMenu();
-	    });
-	    
-	    AudioPlayer.detenerAudio();
-		AudioPlayer.reproducirAudioUnaVez("Resources/gameOver.wav");
-
-	    timeOver.setVisible(true);
-	}
-
-	
-
-	//Perder
-	private void showGameOverMenu3() {
-		Frame menu = new Frame("Game Over") {
+		Frame timeOver = new Frame("¡Tiempo agotado!") {
 			private Image background = Toolkit.getDefaultToolkit().getImage("resources/sombra2 (1).jpg");
 
 			{
@@ -238,13 +165,14 @@ Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 			}
 
 			Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
+
 			@Override
 			public void paint(Graphics g) {
 				g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
 
 				// Dibuja el texto
 				Graphics2D g2d = (Graphics2D) g;
-				g2d.setColor(Color.RED); 
+				g2d.setColor(Color.RED);
 				g2d.setFont(fuentePersonalizada); // Fuente del texto
 
 				String text = "GAME OVER";
@@ -256,12 +184,82 @@ Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 				g2d.drawString(text, x, y);
 
 				super.paint(g);
-				
-			}
-		
-	};
 
-	    Font fuentePersonalizada = FuentePersonalizada.cargarFuente(18f);
+			}
+		};
+
+		timeOver.setSize(400, 250);
+		timeOver.setLayout(null);
+		timeOver.setUndecorated(true);
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		timeOver.setLocation((screen.width - 400) / 2, (screen.height - 250) / 2);
+
+		Button retry = new Button("Reintentar");
+		retry.setBounds(60, 120, 120, 40);
+		timeOver.add(retry);
+
+		Button mainMenu = new Button("Menú");
+		mainMenu.setBounds(220, 120, 120, 40);
+		timeOver.add(mainMenu);
+
+		retry.addActionListener(e -> {
+			resetGame();
+			requestFocus();
+			if (gameThread == null || !gameThread.isAlive()) {
+				gameThread = new Thread(NivelDificil.this);
+				gameThread.start();
+			}
+			timeOver.dispose();
+		});
+
+		mainMenu.addActionListener(e -> {
+			timeOver.dispose();
+			AudioPlayer.detenerAudio();
+			AudioPlayer.reproducirAudio("Resources/menu.wav");
+			BreakoutGame.returnToMenu();
+		});
+
+		AudioPlayer.detenerAudio();
+		AudioPlayer.reproducirAudioUnaVez("Resources/gameOver.wav");
+
+		timeOver.setVisible(true);
+	}
+
+	// Perder
+	private void showGameOverMenu3() {
+		Frame menu = new Frame("Game Over") {
+			private Image background = Toolkit.getDefaultToolkit().getImage("resources/sombra2 (1).jpg");
+
+			{
+				Toolkit.getDefaultToolkit().prepareImage(background, -1, -1, null);
+			}
+
+			Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
+
+			@Override
+			public void paint(Graphics g) {
+				g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+
+				// Dibuja el texto
+				Graphics2D g2d = (Graphics2D) g;
+				g2d.setColor(Color.RED);
+				g2d.setFont(fuentePersonalizada); // Fuente del texto
+
+				String text = "GAME OVER";
+				FontMetrics fm = g2d.getFontMetrics();
+				int textWidth = fm.stringWidth(text);
+				int x = (getWidth() - textWidth) / 2;
+				int y = 100; // Ajusta según posición deseada sobre los botones
+
+				g2d.drawString(text, x, y);
+
+				super.paint(g);
+
+			}
+
+		};
+
+		Font fuentePersonalizada = FuentePersonalizada.cargarFuente(18f);
 		menu.setResizable(false);
 		int w = 500, h = 300;
 		menu.setSize(w, h);
@@ -270,7 +268,7 @@ Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		menu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
 
-		//colocar botones
+		// colocar botones
 		int buttonWidth = 140;
 		int buttonHeight = 50;
 		int buttonY = 220;
@@ -287,19 +285,19 @@ Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 		mainMenu.setBounds((w / 2) + (spacing / 2), buttonY, buttonWidth, buttonHeight);
 		mainMenu.setFont(fuentePersonalizada);
 		menu.add(mainMenu);
-		
+
 		retry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetGame();
 				requestFocus();
 
 				if (gameThread == null || !gameThread.isAlive()) {
-				    gameThread = new Thread(NivelDificil.this);
-				    gameThread.start();
+					gameThread = new Thread(NivelDificil.this);
+					gameThread.start();
 				}
 
-				AudioPlayer.detenerAudio(); 
-		        AudioPlayer.reproducirAudio("Resources/facil.wav");
+				AudioPlayer.detenerAudio();
+				AudioPlayer.reproducirAudio("Resources/dificil.wav");
 				menu.dispose();
 			}
 		});
@@ -307,8 +305,8 @@ Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 		mainMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				menu.dispose();
-				AudioPlayer.detenerAudio(); 
-		        AudioPlayer.reproducirAudio("Resources/menu.wav");
+				AudioPlayer.detenerAudio();
+				AudioPlayer.reproducirAudio("Resources/menu.wav");
 				BreakoutGame.returnToMenu();
 			}
 		});
@@ -321,73 +319,85 @@ Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 
 		AudioPlayer.detenerAudio();
 		AudioPlayer.reproducirAudioUnaVez("Resources/gameOver.wav");
-		
+
 		menu.setVisible(true);
 	}
 
-	
-	//Ganar
+	// Ganar
 	private void winMenu3() {
-		Frame winMenu = new Frame("\u00a1Nivel Completado!") {
-			private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/sombra1 (1).jpg");
-			{
-				Toolkit.getDefaultToolkit().prepareImage(bgImage, -1, -1, null);
-			}
+		Frame winMenu = new Frame("¡Nivel Completado!") {
+	        private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/sombra1 (1).jpg");
 
-			@Override
-			public void paint(Graphics g) {
-				Dimension size = getSize();
-				g.drawImage(bgImage, 0, 0, size.width, size.height, this);
-				super.paint(g);
-			}
-		};
+	        {
+	            Toolkit.getDefaultToolkit().prepareImage(bgImage, -1, -1, null);
+	        }
 
-		Font fuentePersonalizada = FuentePersonalizada.cargarFuente(18f);
-		winMenu.setResizable(false);
-		int w = 500, h = 300;
-		winMenu.setSize(w, h);
-		winMenu.setLayout(null);
-		winMenu.setUndecorated(true);
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		winMenu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
+	        @Override
+	        public void paint(Graphics g) {
+	            Dimension size = getSize();
+	            g.drawImage(bgImage, 0, 0, size.width, size.height, this);
 
-		int bw = 200, bh = 40, bx = (w - bw) / 2;
-		int baseY = 80;
+	            // Texto en la parte superior
+	            String titulo = "Nivel Completado!";
+	            g.setColor(Color.WHITE);
+	            Font fuenteTitulo = FuentePersonalizada.cargarFuente(28f); // Tamaño proporcional
+	            g.setFont(fuenteTitulo);
+	            FontMetrics fm = g.getFontMetrics();
+	            int x = (size.width - fm.stringWidth(titulo)) / 2;
+	            int y = fm.getAscent() + 30; // margen desde arriba
+	            g.drawString(titulo, x, y);
 
-		Button retryBtn = new Button("Reintentar");
-		retryBtn.setBackground(Color.GREEN);
-		retryBtn.setBounds(bx, baseY, bw, bh);
-		retryBtn.setFont(fuentePersonalizada); // Fuente del texto
-		winMenu.add(retryBtn);
-		
-		Button nextBtn = new Button("Nivel Extra");
-		nextBtn.setBackground(Color.YELLOW);
-		nextBtn.setBounds(bx, baseY + 60, bw, bh);
-		nextBtn.setFont(fuentePersonalizada); // Fuente del texto
-		winMenu.add(nextBtn);
+	            super.paint(g);
+	        }
+	    };
 
-		Button menuBtn = new Button("Menú");
-		menuBtn.setBackground(Color.CYAN);
-		menuBtn.setBounds(bx, baseY + 120, bw, bh);
-		menuBtn.setFont(fuentePersonalizada); // Fuente del texto
-		winMenu.add(menuBtn);
+	    Font fuentePersonalizada = FuentePersonalizada.cargarFuente(18f);
+	    winMenu.setResizable(false);
+	    int w = 500, h = 300;
+	    winMenu.setSize(w, h);
+	    winMenu.setLayout(null);
+	    winMenu.setUndecorated(true);
+	    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+	    winMenu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
+
+	    int bw = 200, bh = 40, bx = (w - bw) / 2;
+	    int baseY = 100; // Se baja para dejar espacio al texto
+
+	    Button retryBtn = new Button("Reintentar");
+	    retryBtn.setBackground(Color.GREEN);
+	    retryBtn.setBounds(bx, baseY, bw, bh);
+	    retryBtn.setFont(fuentePersonalizada);
+	    winMenu.add(retryBtn);
+
+	    Button nextBtn = new Button("Siguiente Nivel");
+	    nextBtn.setBackground(Color.YELLOW);
+	    nextBtn.setBounds(bx, baseY + 60, bw, bh);
+	    nextBtn.setFont(fuentePersonalizada);
+	    winMenu.add(nextBtn);
+
+	    Button menuBtn = new Button("Menú");
+	    menuBtn.setBackground(Color.CYAN);
+	    menuBtn.setBounds(bx, baseY + 120, bw, bh);
+	    menuBtn.setFont(fuentePersonalizada);
+	    winMenu.add(menuBtn);
 
 		retryBtn.addActionListener(e -> {
 			winMenu.dispose();
-			//BreakoutGame.restartNivelDificil(); funciona bien sin poner esto
+			AudioPlayer.reproducirAudio("Resources/dificil.wav");
+			// BreakoutGame.restartNivelDificil(); funciona bien sin poner esto
 		});
-		
+
 		nextBtn.addActionListener(e -> {
 			winMenu.dispose();
-			AudioPlayer.detenerAudio(); 
-	        AudioPlayer.reproducirAudio("Resources/facil.wav");
+			AudioPlayer.detenerAudio();
+			AudioPlayer.reproducirAudio("Resources/facil.wav"); //poner extra musica
 			BreakoutGame.launchExtraLevel();
 		});
 
 		menuBtn.addActionListener(e -> {
 			winMenu.dispose();
-			AudioPlayer.detenerAudio(); 
-		    AudioPlayer.reproducirAudio("Resources/menu.wav");
+			AudioPlayer.detenerAudio();
+			AudioPlayer.reproducirAudio("Resources/menu.wav");
 			BreakoutGame.returnToMenu();
 		});
 
@@ -398,8 +408,8 @@ Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 		});
 
 		AudioPlayer.detenerAudio();
-	    AudioPlayer.reproducirAudioUnaVez("Resources/win.wav"); 
-		
+		AudioPlayer.reproducirAudioUnaVez("Resources/win.wav");
+
 		winMenu.setResizable(false);
 		winMenu.setVisible(true);
 	}
@@ -419,29 +429,29 @@ Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 		g.drawString("Vidas: " + lives, 10, 24);
 		g.drawString("Puntuación: " + score, width - 160, 24);
 		g.setFont(f);
-		
-		//para el temporizador, lo dibuja en la pantalla
+
+		// para el temporizador, lo dibuja en la pantalla
 		long remainingTime = Math.max(0, TIME_LIMIT - (System.currentTimeMillis() - startTime));
 		long seconds = remainingTime / 1000;
 		g.drawString("Tiempo: " + seconds + "s", width / 2 - 40, 24);
-		
+
 		paddle.draw(g);
 		ball.draw(g);
 		bricks.draw(g);
 		// Mostrar mensaje de pausa si está pausado
-	    if (paused) {
-	    	Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
-	        g.setFont(fuentePersonalizada);
-	        String texto = "PAUSA";
-	        int x = (width - g.getFontMetrics().stringWidth(texto)) / 2;
-	        int y = height / 2;
+		if (paused) {
+			Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
+			g.setFont(fuentePersonalizada);
+			String texto = "PAUSA";
+			int x = (width - g.getFontMetrics().stringWidth(texto)) / 2;
+			int y = height / 2;
 
-	        // Sombra para visibilidad
-	        g.setColor(Color.BLACK);
-	        g.drawString(texto, x + 2, y + 2);
-	        g.setColor(Color.RED);
-	        g.drawString(texto, x, y);
-	    }
+			// Sombra para visibilidad
+			g.setColor(Color.BLACK);
+			g.drawString(texto, x + 2, y + 2);
+			g.setColor(Color.RED);
+			g.drawString(texto, x, y);
+		}
 		g.dispose();
 		bs.show();
 	}
@@ -452,8 +462,9 @@ Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
 			rightPressed = true;
 		if (e.getKeyCode() == KeyEvent.VK_P)
-	        paused = !paused; // Alterna pausa/reanudar
-		//if (e.getKeyCode() == KeyEvent.VK_P) running = !running; // pausa pero al volver a pulsar no se quita la pausa
+			paused = !paused; // Alterna pausa/reanudar
+		// if (e.getKeyCode() == KeyEvent.VK_P) running = !running; // pausa pero al
+		// volver a pulsar no se quita la pausa
 	}
 
 	public void keyReleased(KeyEvent e) {
@@ -466,8 +477,6 @@ Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 	public void keyTyped(KeyEvent e) {
 	}
 
-	
-	
 	/*
 	 * Clases internas para la durabilidad de cada nivel
 	 */
@@ -475,16 +484,8 @@ Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 		private DurabilityBrick[][] grid;
 		private int rows, cols;
 		private Random rand = new Random();
-		Color[] colores = {
-			    Color.RED,
-			    Color.ORANGE,
-			    Color.YELLOW,
-			    Color.GREEN,
-			    Color.BLUE,
-			    new Color(128, 0, 128) // morado 
-			};
-
-
+		Color[] colores = { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.BLUE, new Color(128, 0, 128) // morado
+		};
 
 		public DurabilityBrickManager(int rows, int cols, int bw, int bh, int ox, int oy) {
 			this.rows = rows;
@@ -493,36 +494,35 @@ Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 			for (int r = 0; r < rows; r++)
 				for (int c = 0; c < cols; c++) {
 					int x = ox + c * (bw + 5), y = oy + r * (bh + 5);
-					int dur = 2 + rand.nextInt(2); //varia entre durabilidad 2 y 3
-					
+					int dur = 2 + rand.nextInt(2); // varia entre durabilidad 2 y 3
+
 //					 int colorIndex = rand.nextInt(colores.length); // índice aleatorio de colores
 //				     Color colorAleatorio = colores[colorIndex]; //sirve pa q aparezcan mas colores iniciales supuestamente pero no salen
-					 grid[r][c] = new DurabilityBrick(x, y, bw, bh, dur);
+					grid[r][c] = new DurabilityBrick(x, y, bw, bh, dur);
 				}
 		}
 
-		//maneja la durabilidad de los ladrillos
+		// maneja la durabilidad de los ladrillos
 		public int checkBallCollision(Ball ball) {
-		    if (ball.isWaiting())
-		        return 0;
+			if (ball.isWaiting())
+				return 0;
 
-		    for (DurabilityBrick[] row : grid) {
-		        for (DurabilityBrick b : row) {
-		            if (!b.isBroken() && ball.getBounds().intersects(b.getBounds())) {
-		                b.hit();
-		                ball.reverseY();
-		                if (b.isBroken()) {
-		                    return 2; // ladrillo destruido (dos toques)
-		                } else {
-		                    return 1; // solo dañado
-		                }
-		            }
-		        }
-		    }
+			for (DurabilityBrick[] row : grid) {
+				for (DurabilityBrick b : row) {
+					if (!b.isBroken() && ball.getBounds().intersects(b.getBounds())) {
+						b.hit();
+						ball.reverseY();
+						if (b.isBroken()) {
+							return 2; // ladrillo destruido (dos toques)
+						} else {
+							return 1; // solo dañado
+						}
+					}
+				}
+			}
 
-		    return 0; // sin colisión
+			return 0; // sin colisión
 		}
-
 
 		public boolean isEmpty() {
 			for (DurabilityBrick[] r : grid)
@@ -543,7 +543,7 @@ Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 		private int x, y, w, h, hits;
 		private boolean broken;
 		private Color color;
-		
+
 		public DurabilityBrick(int x, int y, int w, int h, int hits) {
 			this.x = x;
 			this.y = y;
@@ -551,33 +551,32 @@ Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 			this.h = h;
 			this.hits = hits;
 			if (hits == 3) {
-		        this.color = Color.RED; //durabilidad 3
-		        this.color = Color.CYAN;
-		    } else if (hits == 2) {
-		        this.color = Color.ORANGE; //durabiliad 2
-		    } else {
-		        this.color = Color.PINK;
-		    }
+				this.color = Color.RED; // durabilidad 3
+				this.color = Color.CYAN;
+			} else if (hits == 2) {
+				this.color = Color.ORANGE; // durabiliad 2
+			} else {
+				this.color = Color.PINK;
+			}
 		}
 
 		public void hit() {
-		    hits--;
-		    if (hits <= 0) {
-		        broken = true;
-		    } else {
-		        updateColor(); // cambiar color según golpes restantes
-		    }
+			hits--;
+			if (hits <= 0) {
+				broken = true;
+			} else {
+				updateColor(); // cambiar color según golpes restantes
+			}
 		}
 
-		//actualiza el color segun el estado del bloque
+		// actualiza el color segun el estado del bloque
 		private void updateColor() {
-		    if (hits == 2) {
-		        color = Color.ORANGE;
-		    } else if (hits == 1) {
-		        color = Color.PINK;
-		    }
+			if (hits == 2) {
+				color = Color.ORANGE;
+			} else if (hits == 1) {
+				color = Color.PINK;
+			}
 		}
-
 
 		public boolean isBroken() {
 			return broken;
@@ -597,4 +596,3 @@ Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
 		}
 	}
 }
-

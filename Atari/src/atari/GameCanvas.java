@@ -44,7 +44,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		initGame();
 		
 		AudioPlayer.detenerAudio();
-	    AudioPlayer.reproducirAudio("Resources/facil.wav"); 
+	    AudioPlayer.reproducirAudio("Resources/nivelFacil.wav"); 
 	}
 
 	// Resetea estado para reiniciar partida
@@ -248,7 +248,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 			public void actionPerformed(ActionEvent e) {
 				menu.dispose();
 				AudioPlayer.detenerAudio(); // Detener cualquier sonido
-		        AudioPlayer.reproducirAudio("Resources/facil.wav");
+		        AudioPlayer.reproducirAudio("Resources/nivelFacil.wav");
 				BreakoutGame.restartNivelFacil();
 			}
 		});
@@ -302,84 +302,94 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 
 	// cuando se rompen todos los blques
 	private void winMenu() {
-		Frame winMenu = new Frame("¡Nivel Completado!") {
-			private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/sombra1 (1).jpg");
+	    Frame winMenu = new Frame("¡Nivel Completado!") {
+	        private Image bgImage = Toolkit.getDefaultToolkit().getImage("resources/sombra1 (1).jpg");
 
-			{
-				Toolkit.getDefaultToolkit().prepareImage(bgImage, -1, -1, null);
-			}
+	        {
+	            Toolkit.getDefaultToolkit().prepareImage(bgImage, -1, -1, null);
+	        }
 
-			@Override
-			public void paint(Graphics g) {
-				Dimension size = getSize();
-				g.drawImage(bgImage, 0, 0, size.width, size.height, this);
-				super.paint(g);
-			}
-		};
+	        @Override
+	        public void paint(Graphics g) {
+	            Dimension size = getSize();
+	            g.drawImage(bgImage, 0, 0, size.width, size.height, this);
 
-		Font fuentePersonalizada = FuentePersonalizada.cargarFuente(18f);
-		winMenu.setResizable(false);
-		int w = 500, h = 300;
-		winMenu.setSize(w, h);
-		winMenu.setLayout(null);
-		winMenu.setUndecorated(true);
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		winMenu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
+	            // Texto en la parte superior
+	            String titulo = "Nivel Completado!";
+	            g.setColor(Color.WHITE);
+	            Font fuenteTitulo = FuentePersonalizada.cargarFuente(28f); // Tamaño proporcional
+	            g.setFont(fuenteTitulo);
+	            FontMetrics fm = g.getFontMetrics();
+	            int x = (size.width - fm.stringWidth(titulo)) / 2;
+	            int y = fm.getAscent() + 30; // margen desde arriba
+	            g.drawString(titulo, x, y);
 
-		int bw = 200, bh = 40, bx = (w - bw) / 2;
-		int baseY = 80;
+	            super.paint(g);
+	        }
+	    };
 
-		Button retryBtn = new Button("Reintentar");
-		retryBtn.setBackground(Color.GREEN);
-		retryBtn.setBounds(bx, baseY, bw, bh);
-		retryBtn.setFont(fuentePersonalizada); // Fuente del texto
-		winMenu.add(retryBtn);
+	    Font fuentePersonalizada = FuentePersonalizada.cargarFuente(18f);
+	    winMenu.setResizable(false);
+	    int w = 500, h = 300;
+	    winMenu.setSize(w, h);
+	    winMenu.setLayout(null);
+	    winMenu.setUndecorated(true);
+	    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+	    winMenu.setLocation((screen.width - w) / 2, (screen.height - h) / 2);
 
-		Button nextBtn = new Button("Siguiente Nivel");
-		nextBtn.setBackground(Color.yellow);
-		nextBtn.setBounds(bx, baseY + 60, bw, bh);
-		nextBtn.setFont(fuentePersonalizada); // Fuente del texto
-		winMenu.add(nextBtn);
+	    int bw = 200, bh = 40, bx = (w - bw) / 2;
+	    int baseY = 100; // Se baja para dejar espacio al texto
 
-		Button menuBtn = new Button("Menú");
-		menuBtn.setBackground(Color.cyan);
-		menuBtn.setBounds(bx, baseY + 120, bw, bh);
-		menuBtn.setFont(fuentePersonalizada); // Fuente del texto
-		winMenu.add(menuBtn);
+	    Button retryBtn = new Button("Reintentar");
+	    retryBtn.setBackground(Color.GREEN);
+	    retryBtn.setBounds(bx, baseY, bw, bh);
+	    retryBtn.setFont(fuentePersonalizada);
+	    winMenu.add(retryBtn);
 
-		// acciones de los botones
-		retryBtn.addActionListener(e -> {
-			winMenu.dispose();
-			BreakoutGame.restartNivelFacil();
-		});
+	    Button nextBtn = new Button("Siguiente Nivel");
+	    nextBtn.setBackground(Color.YELLOW);
+	    nextBtn.setBounds(bx, baseY + 60, bw, bh);
+	    nextBtn.setFont(fuentePersonalizada);
+	    winMenu.add(nextBtn);
 
-		nextBtn.addActionListener(e -> {
-			winMenu.dispose();
-			AudioPlayer.detenerAudio(); 
+	    Button menuBtn = new Button("Menú");
+	    menuBtn.setBackground(Color.CYAN);
+	    menuBtn.setBounds(bx, baseY + 120, bw, bh);
+	    menuBtn.setFont(fuentePersonalizada);
+	    winMenu.add(menuBtn);
+
+	    // Acciones de los botones
+	    retryBtn.addActionListener(e -> {
+	        winMenu.dispose();
+	        BreakoutGame.restartNivelFacil();
+	    });
+
+	    nextBtn.addActionListener(e -> {
+	        winMenu.dispose();
+	        AudioPlayer.detenerAudio(); 
 	        AudioPlayer.reproducirAudio("Resources/facil.wav");
-			BreakoutGame.launchMediumLevel(); // ejecuta nivel medio
-		});
+	        BreakoutGame.launchMediumLevel();
+	    });
 
-		menuBtn.addActionListener(e -> {
-			winMenu.dispose();
-			AudioPlayer.detenerAudio(); 
-		    AudioPlayer.reproducirAudio("Resources/menu.wav");
-			BreakoutGame.returnToMenu();
-		});
+	    menuBtn.addActionListener(e -> {
+	        winMenu.dispose();
+	        AudioPlayer.detenerAudio(); 
+	        AudioPlayer.reproducirAudio("Resources/menu.wav");
+	        BreakoutGame.returnToMenu();
+	    });
 
-		winMenu.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				winMenu.dispose();
-			}
-		});
-		
-		//sonido en concreto para ganar
-		AudioPlayer.detenerAudio();
+	    winMenu.addWindowListener(new WindowAdapter() {
+	        public void windowClosing(WindowEvent e) {
+	            winMenu.dispose();
+	        }
+	    });
+
+	    // Sonido de victoria
+	    AudioPlayer.detenerAudio();
 	    AudioPlayer.reproducirAudioUnaVez("Resources/win.wav"); 
 
-
-		winMenu.setResizable(false);
-		winMenu.setVisible(true);
+	    winMenu.setResizable(false);
+	    winMenu.setVisible(true);
 	}
 
 	// Nuevo método para mostrar pantalla de selección de nivel en el menu
