@@ -5,6 +5,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -282,7 +283,7 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
     // Perder por vidas
     private void showGameOverMenu4() {
         Frame menu = new Frame("Game Over") {
-            private Image background = Toolkit.getDefaultToolkit().getImage("resources/sombra1 (1).jpg");
+            private Image background = Toolkit.getDefaultToolkit().getImage("resources/sombra2 (1).jpg");
 
             {
                 Toolkit.getDefaultToolkit().prepareImage(background, -1, -1, null);
@@ -291,11 +292,26 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
             Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);
             @Override
             public void paint(Graphics g) {
-                g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
-                g.setFont(fuentePersonalizada); // Fuente del texto
-                super.paint(g);
-            }
-        };
+            	g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+
+				// Dibuja el texto
+				Graphics2D g2d = (Graphics2D) g;
+				g2d.setColor(Color.RED); 
+				g2d.setFont(fuentePersonalizada); // Fuente del texto
+
+				String text = "GAME OVER";
+				FontMetrics fm = g2d.getFontMetrics();
+				int textWidth = fm.stringWidth(text);
+				int x = (getWidth() - textWidth) / 2;
+				int y = 100; // Ajusta según posición deseada sobre los botones
+
+				g2d.drawString(text, x, y);
+
+				super.paint(g);
+				
+			}
+		
+	};
 
         menu.setResizable(false);
         int w = 400, h = 250;
