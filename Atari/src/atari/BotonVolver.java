@@ -29,7 +29,7 @@ public class BotonVolver extends Canvas implements MouseListener, MouseMotionLis
 	        setBackground(new Color(0, 0, 0, 0)); // Fondo transparente
 	        addMouseListener(this);
 	        addMouseMotionListener(this);
-	        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+	        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); //cambia el cursor del mouse para que se muestre como una mano
 	    }
 
 	    public void setAccion(Runnable accion) {
@@ -66,27 +66,27 @@ public class BotonVolver extends Canvas implements MouseListener, MouseMotionLis
 	    }
 
 	    @Override
-	    public void mouseEntered(MouseEvent e) {
+	    public void mouseEntered(MouseEvent e) { //cuando pasas el raton x encima
 	        hover = true;
 	        AudioPlayer.reproducirEfecto("Resources/hover.wav");
 	        repaint();
 	    }
 
 	    @Override
-	    public void mouseExited(MouseEvent e) {
+	    public void mouseExited(MouseEvent e) { //que se vea el elemento sin necesidad de pasar por encima el raton
 	        hover = false;
 	        repaint();
 	    }
 
 	    @Override
-	    public void mousePressed(MouseEvent e) {
+	    public void mousePressed(MouseEvent e) { //cuando clicas el boton
 	        presionado = true;
 	        AudioPlayer.reproducirEfecto("Resources/click.wav");
 	        repaint();
 	    }
 
 	    @Override
-	    public void mouseReleased(MouseEvent e) {
+	    public void mouseReleased(MouseEvent e) { //cuando sueltas el boton
 	        presionado = false;
 	        repaint();
 	        if (accion != null && hover) {
@@ -94,9 +94,19 @@ public class BotonVolver extends Canvas implements MouseListener, MouseMotionLis
 	        }
 	    }
 
-	    @Override public void mouseClicked(MouseEvent e) {} // no usado
-	    @Override public void mouseDragged(MouseEvent e) {}
-	    @Override public void mouseMoved(MouseEvent e) {}
+	    
+	    //no usados
+		@Override
+		public void mouseClicked(MouseEvent e) {
+		} 
+
+		@Override
+		public void mouseDragged(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+		}
 
 	    public void setColorFondo(Color c) {
 	        this.colorFondo = c;

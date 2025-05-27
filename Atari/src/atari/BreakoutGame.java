@@ -11,38 +11,10 @@ import java.awt.event.WindowEvent;
 
 
 /**
- * CAMBIOS:
- * - Comentarios en el codigo
- * - Cuando se rompen todos los bloques (dificil) añadir cada 2 min una fila y si se queda sin espacio salta el mini menu
- * - Sonido cuando explota + menu
- * - Pausar el juego pulsando P (mostrar texto que diga pausado)
- * - Acabar la interfaz
- * - Establecer 3 modos (dificil) =
- * 		Facil: 3 vidas, romper al toque
- * 		Medio: 3 vidas, romper a los 2 toques, añadir 2 filas mas de bloques
- * 		Dificil: 2 vidas, romper a los 2 o 3 toques y con un limite de tiempo, añadir muchas filas mas de bloques
+ * Clase de ejecución del programa
  * 
- *  Opcional: potenciadores (aumentar nº de bolas, que vaya mas rapido, cuando clicas un bloque rompe la misma fila del bloque)
- *  
- *  
- *  ARREGLAR=
- *  	
- *  	NIVEL FACL
- *  - Al completar el nivel y pasar al siguiente, no aparece la paleta de juego (revisar varias veces)
- *  
- *  
- *  	NIVEL MEDIO
- *  - Metodo en esta clase para reiniciar el nivel medio, el nivel dificil funciona (no hay metodo pero se reinicia y funciona)
- *  - Colores aleatorios
- *  
- *  	NIVEL DIFICIL
- *  - Para que quede mejor, deberian aparecer mas colores aleatorios como en nivel facil pero he implementado esto:
- *  	Cuando el bloque que dura 3 golpes esta full vida, es en cyan
- *  	" "  " " " " " " "" "  "  2 golpes, es en amarillo
- *  	 " "   "" " " " " " " " " 1 golpe, esta en rosa
- *  
- *    Cambian de color segun su durabilidad pero solo aparecen bloques o amarillos o cyan (el codigo es solo de las clases internas, estan al final de la clase)
- *  
+ * Cada nivel tiene su propio metodo de ejecucion ya que poseen diferentes caracteristicas
+ * Se usa el metodo restart para resetear todos los valores de X partida
  */
 
 public class BreakoutGame {
@@ -68,13 +40,13 @@ public class BreakoutGame {
 	        // Crear canvas con dimensiones de pantalla completa
 	        canvas = new GameCanvas(sw, sh);
 	        gameWindow.add(canvas);
-	        // No usar pack(), porque queremos tamaño exacto
+	        // No usar pack() queremos tamaño exacto
 	        gameWindow.setVisible(true);
 	        canvas.requestFocus();
 
 	        gameWindow.addWindowListener(new java.awt.event.WindowAdapter() {
 	            public void windowClosing(java.awt.event.WindowEvent e) {
-	                gameWindow.dispose();
+	                gameWindow.dispose(); //se cierra cada pantalla tras abrir otra
 	                MainMenu.main(null);
 	            }
 	        });
@@ -87,13 +59,13 @@ public class BreakoutGame {
 	        if (gameWindow != null) gameWindow.dispose(); // Si hay una ventana anterior, se cierra
 
 	        gameWindow = new Frame("Atari Breakout – Nivel Medio");
-	        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+	        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize(); //pantalla completa
 	        gameWindow.setSize(screen.width, screen.height);
 	        gameWindow.setLayout(new BorderLayout());
 	        gameWindow.setResizable(false);
-	        gameWindow.setUndecorated(true);
+	        gameWindow.setUndecorated(true); //sin bordes y sin poder modificar la pantalla
 
-	        NivelMedio mediumCanvas = new NivelMedio(screen.width, screen.height);
+	        NivelMedio mediumCanvas = new NivelMedio(screen.width, screen.height); //llama a obj de la clase que queremos ejecutar, en este caso es pa nivelMedio
 	        currentCanvas = mediumCanvas;
 	        gameWindow.add(mediumCanvas, BorderLayout.CENTER);
 
@@ -106,7 +78,7 @@ public class BreakoutGame {
 	        });
 
 	        gameWindow.setVisible(true);
-	        mediumCanvas.requestFocus();
+	        mediumCanvas.requestFocus(); //mediumCanvas recibe el foco del teclado (pulsar teclas)
 	        new Thread(mediumCanvas).start();
 	    }
 	    
@@ -183,7 +155,7 @@ public class BreakoutGame {
 	    //reinicia el nivel medio
 	    public static void restartNivelMedio() {
 	        if (nivelMedio != null) {
-	            nivelMedio.resetGame(); // método de la clase NivelMedio
+	            nivelMedio.resetGame(); // método de la clase NivelMedio, se llama igual q el metodo del nivel 1 pero hacen una ejecucion diferente
 	            nivelMedio.requestFocus();
 	            new Thread(nivelMedio).start();
 	        }
@@ -198,7 +170,7 @@ public class BreakoutGame {
 	        MainMenu.main(null);
 	    }
 
-	    // Entrada por defecto
+	    // Entrada por defecto para abrir el juego
 	    public static void main(String[] args) {
 	        MainMenu.main(args);
 	    }

@@ -34,7 +34,6 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	private boolean paused = false;
 	
 	public GameCanvas(int width, int height) {
-		//AudioPlayer.cargarEfecto("bloque", "Resources/bloque.wav");
 		this.width = width;
 		this.height = height;
 		setPreferredSize(new Dimension(width, height));
@@ -47,12 +46,12 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	    AudioPlayer.reproducirAudio("Resources/nivelFacil.wav"); 
 	}
 
-	// Resetea estado para reiniciar partida
+	// Resetea estado para reiniciar partida, reinicia todos valores
 	public void resetGame() {
         initGame();
         running = true;
         leftPressed = false;
-        rightPressed = false;
+        rightPressed = false; //para que no se mueva la paleta sola cada vez q reinicias
         paused = false;
         requestFocus();
     }
@@ -81,6 +80,8 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		score = 0;
 	}
 
+	
+	//movimiento de la pelota
 	@Override
 	public void run() {
 		running = true;
@@ -121,14 +122,14 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 			}
 			
 			if (bricks.isEmpty()) {
-				running = false;
+				running = false; //se para
 				winMenu(); // Mostrar el menú de victoria
 			}
 
 		} else {
 			ball.update();
 		}
-		if (!wasWaiting && ball.isWaiting()) {
+		if (!wasWaiting && ball.isWaiting()) { //cuando te caes
 			lives--;
 			if (lives <= 0) {
 				running = false;
@@ -451,6 +452,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		botonFacil.setColorFondo(Color.BLUE.darker());
 		botonFacil.setBounds(leftX + canvasW + 40, y1 + (canvasH - botonH) / 2, botonW, botonH);
 		botonFacil.setFont(fuentePersonalizada);
+		
 		botonFacil.setAccion(() -> {
 		    levelFrame.dispose();
 		    BreakoutGame.launchGame();
@@ -476,6 +478,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		botonMedio.setColorFondo(Color.YELLOW.darker());
 		botonMedio.setBounds(leftX + canvasW + 40, y2 + (canvasH - botonH) / 2, botonW, botonH);
 		botonMedio.setFont(fuentePersonalizada.deriveFont(35f)); 
+		
 		botonMedio.setAccion(() -> {
 		    levelFrame.dispose();
 		    BreakoutGame.launchMediumLevel();
@@ -501,6 +504,7 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 		botonDificil.setColorFondo(Color.RED.darker());
 		botonDificil.setBounds(leftX + canvasW + 40, y3 + (canvasH - botonH) / 2, botonW, botonH);
 		botonDificil.setFont(fuentePersonalizada);
+		
 		botonDificil.setAccion(() -> {
 		    levelFrame.dispose();
 		    BreakoutGame.launchDificilLevel(); 

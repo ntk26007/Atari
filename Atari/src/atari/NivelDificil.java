@@ -390,7 +390,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		nextBtn.addActionListener(e -> {
 			winMenu.dispose();
 			AudioPlayer.detenerAudio();
-			AudioPlayer.reproducirAudio("Resources/facil.wav"); //poner extra musica
+			AudioPlayer.reproducirAudio("Resources/facil.wav"); 
 			BreakoutGame.launchExtraLevel();
 		});
 
@@ -438,6 +438,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		paddle.draw(g);
 		ball.draw(g);
 		bricks.draw(g);
+		
 		// Mostrar mensaje de pausa si está pausado
 		if (paused) {
 			Font fuentePersonalizada = FuentePersonalizada.cargarFuente(48f);

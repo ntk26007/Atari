@@ -144,10 +144,6 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
     	if (rightPressed)
     		paddle.moveRight();
         if (!w) {
-//            if (leftPressed)
-//                paddle.moveLeft();
-//            if (rightPressed)
-//                paddle.moveRight();
             ball.update();
             ball.checkWallCollision();
             ball.checkPaddleCollision(paddle);
@@ -182,7 +178,14 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
         }
     }
 
-    // Método para pausar el juego
+    /*
+     *  Método para pausar el juego, método seguro para múltiples hilos (synchronized)
+     *  
+     *  solo un hilo a la vez puede ejecutar pauseGame(), 
+     *  evitando conflictos si varios hilos (como el hilo de renderizado y el hilo de control)
+     *  intentan modificar paused al mismo tiempo.
+     */
+    
     public synchronized void pauseGame() {
         paused = true;
     }
@@ -581,17 +584,13 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
 
         public int checkBallCollision(Ball ball) {
             // Iterar sobre una copia para evitar ConcurrentModificationException si se elimina un ladrillo
+        	// ConcurrentModificationException modifica una colección mientras la recorre
+        	
             for (int i = 0; i < bricks.size(); i++) {
                 DurabilityBrick brick = bricks.get(i);
                 if (!brick.isDestroyed() && brick.getBounds().intersects(ball.getBounds())) {
                     brick.hit();
                     ball.reverseY(); // La bola siempre rebota verticalmente al golpear un ladrillo
-                    // Si el ladrillo se destruye, se puede añadir lógica adicional aquí
-                    // Por ejemplo, eliminarlo de la lista si no se necesita más
-                    // if (brick.isDestroyed()) {
-                    //     // bricks.remove(i); // Si deseas eliminar el ladrillo de la lista al ser destruido
-                    //     // i--; // Ajustar el índice si se elimina
-                    // }
                     return 100; // puntos por cada golpe
                 }
             }
@@ -607,20 +606,20 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
             return true;
         }
 
-        // Se ha eliminado el método 'update' que tomaba ScoreManager, ya que NivelExtra gestiona la puntuación directamente.
-
         public void draw(Graphics g) {
             for (DurabilityBrick brick : bricks) {
                 brick.draw(g);
             }
         }
 
-        public boolean areAllBricksDestroyed() {
-            for (DurabilityBrick brick : bricks) {
-                if (!brick.isDestroyed()) return false;
-            }
-            return true;
-        }
+        //comprueba si todos los bloques estan rotos
+		public boolean areAllBricksDestroyed() {
+			for (DurabilityBrick brick : bricks) {
+				if (!brick.isDestroyed())
+					return false;
+			}
+			return true;
+		}
 
         public void reset() {
             for (DurabilityBrick brick : bricks) {
@@ -630,6 +629,7 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
 
         // Dibuja una estrella en base a coordenadas y tamaño
         public void addStarShape(int centerX, int centerY, int brickWidth, int brickHeight, int durability) {
+        	
             // Coordenadas relativas para formar una estrella de 5 puntas
             // Ajusta estos valores para cambiar la forma o el tamaño de la estrella
             int[][] starCoords = {
@@ -642,7 +642,7 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
             };
 
             // Factor de escala para la estrella (ajusta según el tamaño deseado)
-            int scaleFactor = 3; // Increased scale factor for the overall star shape
+            int scaleFactor = 3; // Incrementa la forma total de la figura (escala)
 
             for (int[] coord : starCoords) {
                 int x = centerX + coord[0] * (brickWidth / 2 + 2) * scaleFactor;
@@ -655,7 +655,7 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
         }
     }
 
-    // la otra clase
+    // la otra clase, lo mismo q el dificil
     public class DurabilityBrick {
         private int x, y, width, height;
         private int durability;
@@ -670,18 +670,21 @@ public class NivelExtra extends Canvas implements Runnable, KeyListener {
             this.initialDurability = durability;
         }
 
-        public void draw(Graphics g) {
-            if (!isDestroyed()) {
-                // Colores basados en la durabilidad
-                if (durability == 3) g.setColor(Color.RED);
-                else if (durability == 2) g.setColor(Color.ORANGE);
-                else g.setColor(Color.YELLOW);
+		public void draw(Graphics g) {
+			if (!isDestroyed()) {
+				// Colores basados en la durabilidad
+				if (durability == 3)
+					g.setColor(Color.RED);
+				else if (durability == 2)
+					g.setColor(Color.ORANGE);
+				else
+					g.setColor(Color.YELLOW);
 
-                g.fillRect(x, y, width, height);
-                g.setColor(Color.BLACK); // Borde negro
-                g.drawRect(x, y, width, height);
-            }
-        }
+				g.fillRect(x, y, width, height);
+				g.setColor(Color.BLACK); // Borde negro
+				g.drawRect(x, y, width, height);
+			}
+		}
 
         public void hit() {
             if (durability > 0) durability--;

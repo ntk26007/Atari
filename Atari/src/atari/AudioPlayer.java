@@ -32,11 +32,13 @@ public class AudioPlayer {
     private static final float VOLUMEN_PREDETERMINADO = -12.0f; // volumen bajo (en decibelios)
     private static HashMap<String, Clip> efectos = new HashMap<>();
 
+    
+    //suena audio normal en bucle
     public static void reproducirAudio(String ruta) {
         detenerAudio(); // si ya había un audio sonando, lo detenemos
 
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(ruta));
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(ruta)); //importar wav
             clip = AudioSystem.getClip();
             clip.open(audioInputStream);
 
@@ -52,6 +54,7 @@ public class AudioPlayer {
         }
     }
 
+    //para musica
     public static void detenerAudio() {
         if (clip != null && clip.isRunning()) {
             clip.stop();
@@ -59,6 +62,7 @@ public class AudioPlayer {
         }
     }
     
+    //sonido un poco cortos (ganar/perder)
     public static void reproducirAudioUnaVez(String ruta) {
         detenerAudio();
         try {
@@ -87,19 +91,7 @@ public class AudioPlayer {
             e.printStackTrace();
         }
     }
-    
-    //deberia ser pal delay pero no va asiq se queda asi (no hace na)
-    public static void cargarEfecto(String nombre, String ruta) {
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(ruta));
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            efectos.put(nombre, clip);
-            
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
-        }
-    }
+   
     
     //metodo que nos sirve para reproducir sonidos muy cortos, para el efecto de los bloques
     public static void reproducirEfecto(String ruta) {

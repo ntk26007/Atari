@@ -25,7 +25,7 @@ public class BrickManager {
 	}
 
 	/**
-	 * Comprueba colisión y destruye ladrillo. Devuelve true si destruyó uno.
+	 * Comprueba colisión y destruye ladrillo. Devuelve true si destruyó uno
 	 */
 	public boolean checkBallCollision(Ball ball) {
 		if (ball.isWaiting())

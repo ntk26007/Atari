@@ -98,6 +98,8 @@ public class Ball {
 		return waiting;
 	}
 
+	
+	//invierte la dirección del movimiento de la pelota, osea depende de donde golpee en la pala, va a la izq o derecha
 	public void reverseY() {
 		dy *= -1;
 	}

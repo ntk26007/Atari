@@ -386,6 +386,15 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 	public void keyTyped(KeyEvent e) {
 	}
 
+	
+	
+	/*
+	 * Clases internas
+	 * 
+	 * 1º Maneja durabilidad de todos los bloques recorriendolos
+	 * 
+	 * 2º Maneja los golpes dados segun el bloque (color)
+	 */
 	class DurabilityBrickManager {
 		private DurabilityBrick[][] grid;
 		private int rows, cols;
@@ -398,7 +407,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 			for (int r = 0; r < rows; r++)
 				for (int c = 0; c < cols; c++) {
 					int x = ox + c * (bw + 5), y = oy + r * (bh + 5);
-					int dur = rand.nextBoolean() ? 2 : 1;
+					int dur = rand.nextBoolean() ? 2 : 1; //establece aleatorio la durabilidad de todos los bloques al recorrerlos
 					grid[r][c] = new DurabilityBrick(x, y, bw, bh, dur);
 				}
 		}
@@ -410,9 +419,9 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 
 		    for (DurabilityBrick[] row : grid) {
 		        for (DurabilityBrick b : row) {
-		            if (!b.isBroken() && ball.getBounds().intersects(b.getBounds())) {
+		            if (!b.isBroken() && ball.getBounds().intersects(b.getBounds())) { //intersects = comprueba si dos bloques se superponen y evita q choquen entre si
 		                b.hit();
-		                ball.reverseY();
+		                ball.reverseY(); //clase Ball
 		                if (b.isBroken()) {
 		                    return 2; // ladrillo destruido (dos toques)
 		                } else {
@@ -446,6 +455,7 @@ public class NivelMedio extends Canvas implements Runnable, KeyListener {
 		private boolean broken;
 		private Color color;
 
+		//constructor que establece que si golpea el verde, se rompe a los dos golpes, si golpea al azul se rompe de una
 		public DurabilityBrick(int x, int y, int w, int h, int hits) {
 			this.x = x;
 			this.y = y;

@@ -3,13 +3,19 @@ package atari;
 import java.awt.*;
 import java.awt.event.*;
 
+
+/**
+ * Clase que muestra la ventana del menu inicial
+ * 
+ */
+
 public class MainMenu extends Frame {
     private Image bgImage;
 
     public MainMenu() {
         super("Menú Principal");
 
-        bgImage = Toolkit.getDefaultToolkit().getImage("resources/mainMenu.png");
+        bgImage = Toolkit.getDefaultToolkit().getImage("resources/mainMenu.png"); //fondo de pantalla
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int sw = screenSize.width, sh = screenSize.height;
@@ -18,6 +24,7 @@ public class MainMenu extends Frame {
         setResizable(false);
         setUndecorated(true);
 
+        //variables para las medias proporcionales de los botones
         int bw = sw / 4;
         int bh = sh / 12;
         int bx = (sw - bw) / 2;
