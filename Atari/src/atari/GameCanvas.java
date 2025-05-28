@@ -85,21 +85,26 @@ public class GameCanvas extends Canvas implements Runnable, KeyListener {
 	@Override
 	public void run() {
 		running = true;
-		long lastTime = System.nanoTime();
-		double nsPerUpdate = 1e9 / 60.0;
-		double delta = 0;
+		long lastTime = System.nanoTime(); //Guarda el tiempo actual en nanosegundos como referencia inicial
+		double nsPerUpdate = 1e9 / 60.0; //Calcula cuántos nanosegundos deben pasar entre cada actualización lógica del juego si queremos 60 actualizaciones por segundo 
+		//(1 segundo = 1e9 nanosegundos).
+		double delta = 0; //Variable que acumula el tiempo transcurrido.
 		while (running) {
-			long now = System.nanoTime();
-			delta += (now - lastTime) / nsPerUpdate;
+			long now = System.nanoTime(); //Obtiene el tiempo actual en cada iteración del bucle, mientras se ejecuta el juego
+			delta += (now - lastTime) / nsPerUpdate; //Calcula cuánto tiempo ha pasado desde la última vez (now - lastTime) 
+			//y lo añade a delta, ajustado para que coincida con la actualizacion
+
+
 			lastTime = now;
-			while (delta >= 1) {
+			while (delta >= 1) { //Si ha pasado suficiente tiempo (es decir, delta >= 1), 
+				//se llama al update() que actualiza la lógica del juego 
 				update();
-				delta--;
+				delta--; // ya se ha hecho una actualización
 			}
-			render();
+			render(); //dibuja en la pantalla
 			try {
 				Thread.sleep(2);
-			} catch (InterruptedException e) {
+			} catch (InterruptedException e) { //Intenta pausar el hilo por 2 milisegundos para evitar que el CPU trabaje de mas
 			}
 		}
 	}

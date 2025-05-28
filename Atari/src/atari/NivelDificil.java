@@ -88,7 +88,7 @@ public class NivelDificil extends Canvas implements Runnable, KeyListener {
 		running = true;
 		long last = System.nanoTime();
 		double nsPerUpdate = 1e9 / 60.0, delta = 0;
-		startTime = System.currentTimeMillis(); // para el temporizador
+		startTime = System.currentTimeMillis(); 
 
 		while (running) {
 			long now = System.nanoTime();
