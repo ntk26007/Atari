@@ -13,6 +13,4 @@
 - Control intuitivo con teclado o ratón.
 - Animaciones suaves y transiciones retro.
 
-¿Preparado para romper todos los bloques? 🧱⚡
-
 ---
