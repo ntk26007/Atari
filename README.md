@@ -1,4 +1,4 @@
-# 🎮 Atari Breakout - Versión Mejorada
+# - 🎮 Atari Breakout - 
 
 **Atari Breakout** es una versión renovada del clásico juego arcade de los años 70, con una estética **retro** que rinde homenaje a los orígenes del videojuego. En esta versión, hemos añadido **3 niveles de dificultad** para ofrecer una experiencia adaptada a todo tipo de jugadores:
 
